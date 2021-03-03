@@ -1,29 +1,40 @@
 /* eslint-disable */
 import PropTypes from 'prop-types';
-import React, { useMemo } from 'react';
+import React,{useEffect} from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import Article from '../article/article';
-//import * as appActions from '../../redux/app-actions';
+import * as articlesActions from '../../redux/articles-actions';
 
-const ArticleList = () => {
-   const list = []
-   for (let i=0;i<10;i++) {
-     list.push(<Article/>)
-   }
+
+const ArticleList = ({articleList,getFirstList}) => {
+    useEffect(() => {
+        getFirstList()
+    },[])
+    console.log(articleList)
+    const list = []
+    if (!!articleList.articles) {
+        const articleInfoMass = articleList.articles
+        console.log(articleInfoMass)
+        for (let i = 0; i < 10; i++) {
+            list.push(<Article articleInfo={articleInfoMass[i]}/>)
+        }
+    }
+
     return <div style={{width:'75%',margin:'0 auto'}}>{list}</div>
 };
-/*
+
 const mapStateToProps = (state) =>
     ({
-    ticketList: state.ticketsReducer
+    articleList: state.articleReducer
   })
 
 
 const mapDispatchToProps = (dispatch) => {
-  const appBind = bindActionCreators(appActions,dispatch)
+  const articlesBind = bindActionCreators(articlesActions,dispatch)
+   console.log(articlesBind)
   return {
-    moreButtonAction:appBind.moreButtonAction
+    getFirstList:articlesBind.getFirstArticlesFetch
   }
 };
 
@@ -34,7 +45,6 @@ ArticleList.defaultProps = {
 ArticleList.propTypes = {
 
 }
-*/
 
-export default ArticleList;
+export default connect(mapStateToProps, mapDispatchToProps)(ArticleList);
 

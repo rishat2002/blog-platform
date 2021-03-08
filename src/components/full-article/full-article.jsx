@@ -1,19 +1,21 @@
 /* eslint-disable */
 import React from 'react';
 import './index.scss'
-import PropTypes from 'prop-types';
-import ArticleService from "../../article-service/article-service";
-import {BrowserRouter,Route,Link} from "react-router-dom";
+import {bindActionCreators} from "redux";
+import * as articlesActions from "../../redux/articles-actions";
+import {connect} from "react-redux";
 
-const Article = ({articleInfo}) => {
-    const {author,title,tagList,description,slug,body} = articleInfo
-    console.log(body)
+const FullArticle = ({articleList,match}) => {
+    console.log(articleList)
+    const slug = match.params.id
+    const currentArticle = articleList.articles.filter(item => {
+        return item.slug===slug
+    })[0]
+    const {author,title,body,tagList,description} = currentArticle
     const {username,image} = author
-    console.log(image)
     const tags = tagList.map(item => <li className="article__tag">{item}</li>)
     return (
-        <Link to={`/articles/${slug}`}>
-        <div className='article'>
+        <div className='article article--full'>
                 <div style={{width:'70%'}}>
                 <div style={{display:'flex'}}>
                 <h2 className="article__title">{title}</h2>
@@ -22,27 +24,43 @@ const Article = ({articleInfo}) => {
                 <ul className="article__tag-list">
                     {tags}
                 </ul>
-                <article className="article__blog-text">
+                <div className="article__blog-text">
                     {description}
-                </article>
+                </div>
             </div>
-            <article className="article__profile">
+            <div className="article__profile">
                 <div>
                 <h3 className="article__profile-name">{username}</h3>
                 <div className="article__profile-date">March 5, 2020</div>
                 </div>
                 <img src={image} alt="" className="article__profile-avatar"/>
+            </div>
+            <article className="article__body">
+                {body}
             </article>
         </div>
-      </Link>
     );
 }
 
-Article.defaultProps = {}
+const mapStateToProps = (state) =>
+    ({
+        articleList: state.articleReducer
+    })
 
-Article.propTypes = {}
 
-export default Article;
+const mapDispatchToProps = (dispatch) => {
+    const articlesBind = bindActionCreators(articlesActions,dispatch)
+
+    return {
+        getFirstList:articlesBind.getFirstArticlesFetch
+    }
+};
+
+FullArticle.defaultProps = {}
+
+FullArticle.propTypes = {}
+
+export default connect(mapStateToProps, mapDispatchToProps)(FullArticle);
 
 //author:
 // bio: "12211221"

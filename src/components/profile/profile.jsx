@@ -16,24 +16,20 @@ import {connect} from "react-redux";
 import FullArticle from "../full-article/full-article";
 import SignIn from "../ authorization/sign-in";
 import SignUp from "../ authorization/sign-up";
-import Profile from "../profile/profile";
 
-const App = ({getFirstList}) => {
+const Profile = ({getFirstList}) => {
     useEffect(() => {
         getFirstList()
     },[])
-
-
     return (
         <div className='content'>
-            <BrowserRouter>
-       <Route exact path='/articles' component={ArticleList}/>
-       <Route path='/articles/:id' component={FullArticle}/>
-        <div style={{height:40,width:'100%'}}></div>
-        <Route path={'/sign-in'} component={SignIn}/>
-        <Route path={'/sign-up'} component={SignUp}/>
-        <Route exact path='/profile' component={Profile}/>
-            </BrowserRouter>
+                <header className='content__header'>
+                    <h2 className='content__header-title'>Realworld Blog</h2>
+                    <Link className='content__header-link-in' to={'/creat-article'}>Create article</Link>
+                    <Link className='content__header-link-up' to={'/sign-in'}>Log out</Link>
+                </header>
+
+                <div style={{height:40,width:'100%'}}></div>
         </div>
     );
 }
@@ -51,5 +47,5 @@ const mapDispatchToProps = (dispatch) => {
     }
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(App);
+export default connect(mapStateToProps, mapDispatchToProps)(Profile);
 

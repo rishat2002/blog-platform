@@ -1,7 +1,4 @@
-.todoapp {
-  width: 100%;
-  background: #EBEEF3;
-}
+@import '../common-styles/index';
 .content {
   font-family: Inter;
   margin: 0 auto;
@@ -34,10 +31,10 @@
   align-items: center;
   justify-content: center;
   &:hover {
-    border: 1px solid #52C41A;
+    border: 1px solid #52c41a;
     box-sizing: border-box;
     border-radius: 5px;
-    color:#52C41A;
+    color: #52c41a;
   }
 }
 .content__header-link-up {
@@ -54,10 +51,10 @@
   justify-content: center;
   color: rgba(0, 0, 0, 0.85);
   &:hover {
-    border: 1px solid #52C41A;
+    border: 1px solid #52c41a;
     box-sizing: border-box;
     border-radius: 5px;
-    color:#52C41A;
+    color: #52c41a;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -65,15 +62,7 @@
 }
 
 .pagination {
-    display: flex !important;
-    margin-top: 30px !important;
-    justify-content: center;
-  }
- body {
-   background: #EBEEF3;
- }
-
- .error {
-   color:#F5222D;
-
- }
+  display: flex !important;
+  margin-top: 30px !important;
+  justify-content: center;
+}

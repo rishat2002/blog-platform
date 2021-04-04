@@ -1,19 +1,33 @@
+@import '../common-styles/index';
 .todoapp {
   width: 100%;
-  background: #EBEEF3;
+}
+.pagination {
+  display: flex !important;
+  margin-top: 30px !important;
+  justify-content: center;
+}
+body {
+  background: $Background;
+  height: auto;
+}
+html {
+  height: auto;
 }
 
+.error {
+  color: $error-color;
+}
 
-.pagination {
-    display: flex !important;
-    margin-top: 30px !important;
-    justify-content: center;
-  }
- body {
-   background: #EBEEF3;
- }
+button:hover {
+  opacity: 0.8;
+}
+a:hover {
+  opacity: 0.8;
+}
 
- .error {
-   color:#F5222D;
-
- }
+button {
+  outline: none;
+  border: none;
+  cursor: pointer;
+}

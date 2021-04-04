@@ -1,3 +1,3 @@
-//import FullArticle from "./article";
+// import FullArticle from "./article";
 
-//export default FullArticle;
+// export default FullArticle;

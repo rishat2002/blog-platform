@@ -1,31 +1,22 @@
+@import '../common-styles/index';
 .article {
   display: flex;
   padding: 15px 14px 15px 19px;
   justify-content: space-between;
   font-family: Inter;
-  filter: drop-shadow(0px 4px 12px rgba(0, 0, 0, 0.15));
+  filter: drop-shadow($shadow-2);
   margin-bottom: 26px;
   border-radius: 5px;
   background: white;
-  filter: drop-shadow(0px 4px 12px rgba(0, 0, 0, 0.15));
 }
 .article__title {
   font-size: 20px;
   line-height: 28px;
   display: flex;
-  color: #1890FF;
+  color: $info-color;
   margin: 0px;
 }
-.article__like-button {
-  background: url("./Vector.svg");
-  width: 16px;
-  height: 16px;
-  margin-left: 13px;
-  outline: none;
-  align-self: center;
-  border: none;
-  cursor: pointer;
-}
+
 .article__tag-list {
   display: flex;
   margin-top: 5px;
@@ -35,15 +26,14 @@
 }
 .article__tag {
   height: 20px;
-  border: 1px solid rgba(0, 0, 0, 0.5);
-  box-sizing: border-box;
+  border: 1px solid $text-color-secondary;
   padding: 0px 5px;
   border-radius: 2px;
   margin-right: 8px;
   list-style: none;
   font-size: 12px;
   line-height: 15px;
-  color: rgba(0, 0, 0, 0.5);
+  color: $text-color-secondary;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -52,7 +42,7 @@
 .article__blog-text {
   font-size: 12px;
   line-height: 22px;
-  color: rgba(0, 0, 0, 0.75);
+  color: $text-color;
   margin-right: 60px;
   height: 45px;
   overflow: hidden;
@@ -61,22 +51,49 @@
 .article__profile {
   display: flex;
   width: 30%;
-  justify-content: flex-end;
 }
 .article__profile-name {
   font-size: 18px;
   line-height: 28px;
-  color: rgba(0, 0, 0, 0.85);
+  color: $heading-color;
   margin: 0px;
 }
 .article__profile-date {
   font-size: 12px;
   line-height: 22px;
-  color: rgba(0, 0, 0, 0.5);
+  color: $text-color-secondary;
 }
 .article__profile-avatar {
   width: 46px;
   height: 46px;
   border-radius: 23px;
   margin-left: 12px;
+}
+
+.article__like-button {
+  &-false {
+    background: url('./Vector.svg');
+    width: 16px;
+    height: 16px;
+    margin-left: 13px;
+    align-self: center;
+  }
+  &-true {
+    background: url('./path4.svg') no-repeat center;
+    width: 16px;
+    height: 16px;
+    margin-left: 13px;
+    align-self: center;
+  }
+}
+
+.article__like-count {
+  font-family: Inter;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 14px;
+  line-height: 22px;
+  color: rgba(0, 0, 0, 0.75);
+  align-self: center;
+  margin-left: 5px;
 }

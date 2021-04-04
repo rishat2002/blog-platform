@@ -1,9 +1,9 @@
 
-const reducer = (state = {} , action) => {
-    if (action.type==='FETCH-ARTICLES') {
-        return action.articles
-    }
-    return state
-  };
+const reducer = (state = { articles: {}, articlesCount: 0 }, action) => {
+  if (action.type === 'FETCH-NO-INIT-ARTICLES' || action.type === 'FETCH-INIT-ARTICLES') {
+    return action.articles;
+  }
+  return state;
+};
 
 export default reducer;

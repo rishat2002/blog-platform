@@ -13,7 +13,7 @@ const EditArticle = ({ currentArticle }) => {
   return (
     <div>
       <HeaderAuthorization />
-      <Form formTitle='Edit article' sendDataFunc={postNewArticle} currentArticle={currentArticle} />
+      <Form formTitle="Edit article" sendDataFunc={postNewArticle} currentArticle={currentArticle} />
     </div>
   );
 };
@@ -29,10 +29,10 @@ const mapDispatchToProps = (dispatch) => {
   };
 };
 
-EditArticle.defaultProps = {currentArticle:{}};
+EditArticle.defaultProps = { currentArticle: {} };
 
 EditArticle.propTypes = {
-  currentArticle: PropTypes.objectOf(PropTypes.object,PropTypes.string,PropTypes.array)
+  currentArticle: PropTypes.objectOf(PropTypes.object, PropTypes.string, PropTypes.array),
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(EditArticle);

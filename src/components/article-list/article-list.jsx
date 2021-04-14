@@ -21,7 +21,7 @@ const ArticleList = ({ articleList, noInitArticlesFetch, initArticlesFetch, prof
         setPaginationFlag(true);
       });
     }
-  }, [current,noInitArticlesFetch,initArticlesFetch,profile.user]);
+  }, [current, noInitArticlesFetch, initArticlesFetch, profile.user]);
   const onChange = (page) => {
     setCurrent(page);
   };
@@ -29,8 +29,7 @@ const ArticleList = ({ articleList, noInitArticlesFetch, initArticlesFetch, prof
     const articleInfoMass = articleList.articles;
     if (articleInfoMass.length !== 0) {
       for (let i = 0; i < articleInfoMass.length; i++) {
-        list.push(<Article articleInfo={articleInfoMass[i]} key={i
-        }/>);
+        list.push(<Article articleInfo={articleInfoMass[i]} key={i} />);
       }
     }
   }
@@ -66,14 +65,17 @@ const mapDispatchToProps = (dispatch) => {
 };
 
 ArticleList.defaultProps = {
-  articleList:{}, noInitArticlesFetch:() => {}, initArticlesFetch:() => {}, profile:{user:{},errors:{}}
+  articleList: {},
+  noInitArticlesFetch: () => {},
+  initArticlesFetch: () => {},
+  profile: { user: {}, errors: {} },
 };
 
 ArticleList.propTypes = {
-  articleList:PropTypes.objectOf(PropTypes.any),
-  noInitArticlesFetch:PropTypes.func,
-  initArticlesFetch:PropTypes.func,
-  profile:PropTypes.objectOf(PropTypes.object)
+  articleList: PropTypes.objectOf(PropTypes.any),
+  noInitArticlesFetch: PropTypes.func,
+  initArticlesFetch: PropTypes.func,
+  profile: PropTypes.objectOf(PropTypes.object),
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(ArticleList);

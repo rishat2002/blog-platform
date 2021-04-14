@@ -12,10 +12,13 @@ const Article = ({ articleInfo, setCurrentArticleFunc }) => {
   let { favoritesCount } = articleInfo;
   let key = 0;
   const tags = tagList.map((item) => {
-        key += 1;
-        return <li className="article__tag" key={key}>{item}</li>
-      }
-  );
+    key += 1;
+    return (
+      <li className="article__tag" key={key}>
+        {item}
+      </li>
+    );
+  });
   const [like, setLike] = useState(false);
   let buttonLikeClassName = 'article__like-button-false';
   if (like) {

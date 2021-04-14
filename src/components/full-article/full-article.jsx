@@ -8,7 +8,7 @@ import ArticleService from '../../article-service/article-service';
 import HeaderAuthorization from '../header/authorization-header';
 import Header from '../header/header';
 
-const FullArticle = ({  match, profile }) => {
+const FullArticle = ({ match, profile }) => {
   const [currentArticle, setCurrentArticle] = useState({
     author: { username: '', image: '' },
     title: '',
@@ -29,15 +29,15 @@ const FullArticle = ({  match, profile }) => {
   const [like, setLike] = useState(false);
   let buttonLikeClassName = 'article__like-button-false';
   if (like) {
-    favoritesCount=+1;
+    favoritesCount = +1;
     buttonLikeClassName = 'article__like-button-true';
   }
   const confirmForm = (
-    <section className='article__confirm'>
-      <div className="article__confirm-img"/>
+    <section className="article__confirm">
+      <div className="article__confirm-img" />
       <span className="article__confirm-question">Are you sure to delete this article?</span>
       <button
-        type='button'
+        type="button"
         className="article__confirm-no"
         onClick={() => {
           setConfirmBool(false);
@@ -51,7 +51,7 @@ const FullArticle = ({  match, profile }) => {
           new ArticleService().deleteArticle(profile.user.token, currentArticle.slug);
           setRedirectBool(true);
         }}
-        type='button'
+        type="button"
       >
         Yes
       </button>
@@ -63,7 +63,7 @@ const FullArticle = ({  match, profile }) => {
   const { username, image } = author;
   const tags = tagList.map((item) => <li className="article__tag">{item}</li>);
   const header = Object.keys(profile.user).length !== 0 ? <HeaderAuthorization /> : <Header />;
-    /* eslint-disable */
+  /* eslint-disable */
   const editDeleteButtons =
     profile.user.username === author.username ? (
       <div style={{ marginTop: 30, position: 'relative' }}>
@@ -118,16 +118,16 @@ const FullArticle = ({  match, profile }) => {
       </div>
       {redirectBool ? <Redirect to="/articles" /> : null}
     </section>
-      /* eslint-enable */
+    /* eslint-enable */
   );
 };
 
 /* eslint-disable */
 const markDownParse = (markDown) => {
-    var MarkdownIt = require('markdown-it'),
-        md = new MarkdownIt();
-    var result = md.render(markDown);
-    return result;
+  var MarkdownIt = require('markdown-it'),
+    md = new MarkdownIt();
+  var result = md.render(markDown);
+  return result;
 };
 /* eslint-enable */
 
@@ -137,15 +137,13 @@ const mapStateToProps = (state) => ({
 });
 
 FullArticle.defaultProps = {
-    match:{params:{}},
-    profile:{errors:{},user:{}}
+  match: { params: {} },
+  profile: { errors: {}, user: {} },
 };
 
 FullArticle.propTypes = {
-    match:PropTypes.objectOf(PropTypes.any),
-    profile:PropTypes.objectOf(PropTypes.object)
+  match: PropTypes.objectOf(PropTypes.any),
+  profile: PropTypes.objectOf(PropTypes.object),
 };
 
 export default connect(mapStateToProps, null)(FullArticle);
-
-

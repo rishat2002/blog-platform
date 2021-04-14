@@ -12,7 +12,7 @@ const CreateArticle = () => {
   return (
     <div>
       <HeaderAuthorization />
-      <Form formTitle='Create article' sendDataFunc={postNewArticle} />
+      <Form formTitle="Create article" sendDataFunc={postNewArticle} />
     </div>
   );
 };
@@ -34,4 +34,3 @@ CreateArticle.defaultProps = {};
 CreateArticle.propTypes = {};
 
 export default connect(mapStateToProps, mapDispatchToProps)(CreateArticle);
-

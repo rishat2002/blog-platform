@@ -1,4 +1,3 @@
-
 const reducer = (state = { articles: {}, articlesCount: 0 }, action) => {
   if (action.type === 'FETCH-NO-INIT-ARTICLES' || action.type === 'FETCH-INIT-ARTICLES') {
     return action.articles;

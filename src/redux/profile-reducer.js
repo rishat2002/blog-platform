@@ -11,7 +11,7 @@ const reducer = (state = { user: {}, errors: {} }, action) => {
   }
 
   if (action.type === 'RESET-ERRORS') {
-    return {...state,errors: {}}
+    return { ...state, errors: {} };
   }
 
   if (action.type === 'LOG-OUT') {

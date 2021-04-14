@@ -15,14 +15,14 @@ const HeaderAuthorization = ({ profile, getUserLogOut }) => {
   return (
     <header className="content__header">
       <h2 className="content__header-title">Realworld Blog</h2>
-      <Link className="content__header-link-create-article green-button" to='/create-article'>
+      <Link className="content__header-link-create-article green-button" to="/create-article">
         Create article
       </Link>
-      <Link className="content__profile-link" to='/profile'>
+      <Link className="content__profile-link" to="/profile">
         <h3 className="article__profile-name">{username}</h3>
         <img src={image} alt="" className="article__profile-avatar" />
       </Link>
-      <Link onClick={logOutOnclickHandler} className="content__header-link-log-out" to='/articles'>
+      <Link onClick={logOutOnclickHandler} className="content__header-link-log-out" to="/articles">
         Log out
       </Link>
     </header>
@@ -40,13 +40,13 @@ const mapDispatchToProps = (dispatch) => {
 };
 
 HeaderAuthorization.defaultProps = {
-    profile:{},
-    getUserLogOut:() => {}
-}
+  profile: {},
+  getUserLogOut: () => {},
+};
 
 HeaderAuthorization.propTypes = {
-    profile: PropTypes.objectOf(PropTypes.object),
-    getUserLogOut: PropTypes.func
-}
+  profile: PropTypes.objectOf(PropTypes.object),
+  getUserLogOut: PropTypes.func,
+};
 
 export default connect(mapStateToProps, mapDispatchToProps)(HeaderAuthorization);

@@ -1,14 +1,14 @@
-import React from "react";
+import React from 'react';
 import { Link } from 'react-router-dom';
 import './index.scss';
 
 const Header = () => (
   <header className="content__header">
     <h2 className="content__header-title">Realworld Blog</h2>
-    <Link className="content__header-link-in" to='/sign-in'>
+    <Link className="content__header-link-in" to="/sign-in">
       Sign in
     </Link>
-    <Link className="content__header-link-up" to='/sign-up'>
+    <Link className="content__header-link-up" to="/sign-up">
       Sign Up
     </Link>
   </header>

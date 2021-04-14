@@ -1,4 +1,3 @@
-
 import AuthorizationService from '../article-service/authorization-service';
 
 const serv = new AuthorizationService();
@@ -22,7 +21,7 @@ export const getUserLogOut = () => {
 
 export const initUser = () => {
   let profile = JSON.parse(sessionStorage.getItem('blogProfile'));
-  if (profile === null || profile === undefined || profile.user===undefined) {
+  if (profile === null || profile === undefined || profile.user === undefined) {
     profile = { user: {}, errors: {} };
   } else {
     profile = { ...profile, errors: {} };
@@ -30,8 +29,7 @@ export const initUser = () => {
   return { type: 'INIT-USER', profile };
 };
 
-export const resetError = () => ({type: 'RESET-ERRORS'})
-
+export const resetError = () => ({ type: 'RESET-ERRORS' });
 
 export const getUpdateUserPut = (profileInfo, token) => async (dispatch) => {
   const getObj = await serv.updateUserPut({ user: profileInfo }, token);

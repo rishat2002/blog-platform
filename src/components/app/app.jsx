@@ -5,6 +5,7 @@ import { BrowserRouter, Route } from 'react-router-dom';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
+import {Redirect} from "react-router";
 import FullArticle from '../full-article/full-article';
 import SignIn from '../authorization/sign-in';
 import SignUp from '../authorization/sign-up';
@@ -13,6 +14,7 @@ import EditProfile from '../authorization/edit-profile';
 import * as profileActions from '../../redux/profile-actions';
 import CreateArticle from '../create-edit-article/create-article';
 import EditArticle from '../create-edit-article/edit-article';
+
 
 const App = ({ initUser, logOut }) => {
   useEffect(() => {
@@ -32,6 +34,7 @@ const App = ({ initUser, logOut }) => {
         <Route exact path="/profile" component={EditProfile} />
         <Route exact path="/edit-article" component={EditArticle} />
         <Route exact path="/create-article" component={CreateArticle} />
+        <Redirect to="/articles" />
       </BrowserRouter>
     </div>
   );

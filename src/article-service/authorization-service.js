@@ -1,18 +1,10 @@
+import ServConfig from './serv-config';
+
 class AuthorizationService {
-  apiBase = 'https://conduit.productionready.io/api/';
-
-  api = ``;
-
-  async getResource(url) {
-    const res = await fetch(`${this.apiBase}${url}`);
-    if (!res.ok) {
-      throw new Error(`Could not fetch ${url}, received ${res.status}`);
-    }
-    return res.json();
-  }
+  servConfig = new ServConfig();
 
   async signUpPost(profileInfo) {
-    const response = await fetch(`${this.apiBase}users`, {
+    const response = await fetch(`${this.servConfig.apiBase}users`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json;charset=utf-8',
@@ -24,7 +16,7 @@ class AuthorizationService {
   }
 
   async signInPost(profileInfo) {
-    const response = await fetch(`${this.apiBase}users/login`, {
+    const response = await fetch(`${this.servConfig.apiBase}users/login`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json;charset=utf-8',
@@ -36,7 +28,7 @@ class AuthorizationService {
   }
 
   async updateUserPut(profileInfo, token) {
-    const response = await fetch(`${this.apiBase}user`, {
+    const response = await fetch(`${this.servConfig.apiBase}user`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json;charset=utf-8',

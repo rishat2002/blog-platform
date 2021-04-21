@@ -1,17 +1,14 @@
 import React, { useState } from 'react';
 import './index.scss';
+import { format } from 'date-fns';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
-import { bindActionCreators } from 'redux';
-import { connect } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import setCurrentArticle from '../../redux/current-article-actions';
 
-const Article = ({ articleInfo, setCurrentArticleFunc }) => {
-  const { author, title, tagList, description, slug } = articleInfo;
-  const { username, image } = author;
-  let { favoritesCount } = articleInfo;
+const useGetTagList = (taglist) => {
   let key = 0;
-  const tags = tagList.map((item) => {
+  return taglist.map((item) => {
     key += 1;
     return (
       <li className="article__tag" key={key}>
@@ -19,33 +16,64 @@ const Article = ({ articleInfo, setCurrentArticleFunc }) => {
       </li>
     );
   });
+};
+/* eslint-disable */
+const useGetLike = (favoritesCount) => {
+  let likeCount = favoritesCount;
   const [like, setLike] = useState(false);
   let buttonLikeClassName = 'article__like-button-false';
   if (like) {
-    favoritesCount = +1;
+    likeCount = likeCount+1;
     buttonLikeClassName = 'article__like-button-true';
   }
+
+  return (
+    <>
+      <button
+        className={buttonLikeClassName}
+        onClick={(event) => {
+          setLike(!like);
+          event.preventDefault();
+        }}
+        type="button"
+      />
+      <div className="article__like-count">{likeCount}</div>
+    </>
+  );
+  /* eslint-enable */
+};
+
+export const dateParse = (stringDate) => {
+  const dateMass = stringDate.split('-');
+  const day = dateMass[2].substr(0, 2);
+  const formatDate = format(new Date(Number(dateMass[0]), Number(dateMass[1]) - 1, day), 'MMM d, yyyy');
+  return formatDate;
+};
+
+const Article = ({ articleInfo }) => {
+  const { author, title, description, slug, tagList, createdAt } = articleInfo;
+  const profile = useSelector((state) => state.profileReducer);
+  const formatDate = dateParse(createdAt);
+  const { username, image } = author;
+  const { favoritesCount } = articleInfo;
+  const dispatch = useDispatch();
+  const tags = useGetTagList(tagList);
+  const like = useGetLike(favoritesCount);
   /* eslint-disable */
   return (
     <Link
       to={`/articles/${slug}`}
       onClick={() => {
-        setCurrentArticleFunc(articleInfo);
+        if (author.username === profile.user.username) {
+          dispatch(setCurrentArticle(articleInfo));
+        }
       }}
     >
       <div className="article">
         <div style={{ width: '70%' }}>
           <div style={{ display: 'flex' }}>
             <h2 className="article__title">{title}</h2>
-            <button
-              className={buttonLikeClassName}
-              onClick={(event) => {
-                setLike(!like);
-                event.preventDefault();
-              }}
-              type="button"
-            />
-            <div className="article__like-count">{favoritesCount}</div>
+            {like}
           </div>
           <ul className="article__tag-list">{tags}</ul>
           <article className="article__blog-text">{description}</article>
@@ -54,7 +82,7 @@ const Article = ({ articleInfo, setCurrentArticleFunc }) => {
           <div style={{ display: 'flex' }}>
             <div>
               <h3 className="article__profile-name">{username}</h3>
-              <div className="article__profile-date">March 5, 2020</div>
+              <div className="article__profile-date">{formatDate}</div>
             </div>
             <img src={image} alt="" className="article__profile-avatar" />
           </div>
@@ -66,21 +94,11 @@ const Article = ({ articleInfo, setCurrentArticleFunc }) => {
 };
 
 Article.defaultProps = {
-  articleInfo: { author: {}, title: {}, tagList: [], description: '', slug: '' },
-  setCurrentArticleFunc: () => {},
+  articleInfo: {},
 };
 
 Article.propTypes = {
   articleInfo: PropTypes.objectOf(PropTypes.any),
-  setCurrentArticleFunc: PropTypes.func,
 };
 
-const mapDispatchToProps = (dispatch) => {
-  const setCurrentArticleBind = bindActionCreators(setCurrentArticle, dispatch);
-
-  return {
-    setCurrentArticleFunc: setCurrentArticleBind,
-  };
-};
-
-export default connect(null, mapDispatchToProps)(Article);
+export default Article;

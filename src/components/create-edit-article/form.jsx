@@ -1,14 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
-import { connect } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { Redirect } from 'react-router';
 import PropTypes from 'prop-types';
 import '../authorization/index.scss';
-import CreateForm from '../form/create-form';
+import { Spin } from 'antd';
 
+
+/* eslint-disable */
 const TagInput = ({ tagInfo, deleteFunc }) => {
   const { register } = useForm();
-  /* eslint-disable */
   const [tagValue, setTagValue] = useState('');
   const handleChangeTag = (event) => {
     setTagValue(event.target.value);
@@ -39,31 +40,25 @@ const TagInput = ({ tagInfo, deleteFunc }) => {
   );
 };
 
-const Form = ({ formTitle, sendDataFunc, profile, currentArticle }) => {
-  const createForm = new CreateForm();
-  const { register, handleSubmit, errors } = useForm();
-  const [articleInfo, setArticleInfo] = useState({ title: '', description: '', body: '' });
-  const [tagMass, setTagMass] = useState([]);
-  const [postForm, setPostForm] = useState(false);
-  const handlersObject = createForm.createInputHandlers(articleInfo, setArticleInfo, () => {});
-  useEffect(() => {
-    setArticleInfo({ ...currentArticle });
-  }, [currentArticle]);
 
-  const onSubmit = () => {
-    setArticleInfo({
-      ...articleInfo,
-      tagList: tagMass.map((item) => item.tagName),
-    });
-    setPostForm(true);
+const useHandlers = (setArticleInfo,articleInfo) => {
+  const titleHandler = (event) => {
+    setArticleInfo({ ...articleInfo, title: event.target.value });
   };
-  if (postForm) {
-    if (currentArticle === undefined) {
-      sendDataFunc(articleInfo, profile.user.token);
-    } else {
-      sendDataFunc(articleInfo, profile.user.token, currentArticle.slug);
-    }
+  const descriptionHandler = (event) => {
+    setArticleInfo({ ...articleInfo, description: event.target.value });
+  };
+  const bodyHandler = (event) => {
+    setArticleInfo({ ...articleInfo, body: event.target.value });
+  };
+  return {
+    titleHandler,
+    descriptionHandler,
+    bodyHandler
   }
+}
+
+const useTagProps = (tagMass,setTagMass) => {
   const deleteFunc = (id) => {
     const newTagMass = tagMass.filter((item) => item.id !== id);
     setTagMass(newTagMass);
@@ -77,7 +72,46 @@ const Form = ({ formTitle, sendDataFunc, profile, currentArticle }) => {
     const newTag = { key, tagName: '', id: key };
     setTagMass([...tagMass, newTag]);
   };
+  return {
+    deleteFunc,addTagHandler
+  }
+}
 
+const Form = ({ formTitle, sendDataFunc }) => {
+  const currentArticle = useSelector((state) => state.currentArticleReducer);
+  const profile = useSelector((state) => state.profileReducer);
+  const { register, handleSubmit, errors } = useForm();
+  const [articleInfo, setArticleInfo] = useState({ title: '', description: '', body: '' });
+  const [tagMass, setTagMass] = useState([]);
+  const [postForm, setPostForm] = useState(false);
+  const [disableSubmit, setDisableSubmit] = useState(true);
+  const {titleHandler, descriptionHandler, bodyHandler} = useHandlers(setArticleInfo,articleInfo)
+  useEffect(() => {
+    if (formTitle === 'Edit article') {
+      setArticleInfo({ ...currentArticle });
+    }
+  }, [currentArticle, formTitle]);
+
+  const onSubmit = () => {
+    setDisableSubmit(false);
+    setPostForm(true)
+    setArticleInfo({
+      ...articleInfo,
+      tagList: tagMass.map((item) => item.tagName),
+    });
+  };
+  if (postForm) {
+    if (currentArticle === undefined) {
+      sendDataFunc(articleInfo, profile.user.token).then(() => {
+        setDisableSubmit(true);
+      });
+    } else {
+      sendDataFunc(articleInfo, profile.user.token, currentArticle.slug).then(() => {
+        setDisableSubmit(true);
+      });
+    }
+  }
+  const {deleteFunc,addTagHandler} = useTagProps(tagMass,setTagMass)
   const tagComponentMass = tagMass.map((item) => <TagInput tagInfo={item} deleteFunc={deleteFunc} />);
   const { body, description, title } = articleInfo;
   return (
@@ -90,7 +124,7 @@ const Form = ({ formTitle, sendDataFunc, profile, currentArticle }) => {
           <input
             className="form__input form__input--article"
             placeholder="Title"
-            onChange={handlersObject.title}
+            onChange={titleHandler}
             value={title}
             ref={register({ required: true, minLength: 1 })}
             name="titleError"
@@ -102,7 +136,7 @@ const Form = ({ formTitle, sendDataFunc, profile, currentArticle }) => {
           <input
             className="form__input form__input--article"
             placeholder="Short description"
-            onChange={handlersObject.description}
+            onChange={descriptionHandler}
             value={description}
             ref={register({ required: true, minLength: 1 })}
             name="shortDescriptionError"
@@ -114,7 +148,7 @@ const Form = ({ formTitle, sendDataFunc, profile, currentArticle }) => {
           <textarea
             className="form__input form__input--article form--text"
             placeholder="Text"
-            onChange={handlersObject.body}
+            onChange={bodyHandler}
             value={body}
             ref={register({ required: true, minLength: 1 })}
             name="textError"
@@ -127,15 +161,15 @@ const Form = ({ formTitle, sendDataFunc, profile, currentArticle }) => {
             Add tag
           </button>
         </label>
-        <input type="submit" className="form__submit form__submit--edit" value="Send" />
+        {disableSubmit ? (
+          <input type="submit" className="form__submit form__submit--edit submit-button" value="Send" />
+        ) : (
+          <Spin className="form__submit" />
+        )}
       </form>
     </section>
   );
 };
-
-const mapStateToProps = (state) => ({
-  profile: state.profileReducer,
-});
 
 TagInput.defaultProps = {
   tagInfo: {},
@@ -150,15 +184,11 @@ TagInput.propTypes = {
 Form.defaultProps = {
   formTitle: '',
   sendDataFunc: () => {},
-  profile: { user: {}, errors: {} },
-  currentArticle: {},
 };
 
 Form.propTypes = {
   formTitle: PropTypes.string,
   sendDataFunc: PropTypes.func,
-  profile: PropTypes.objectOf(PropTypes.object),
-  currentArticle: PropTypes.objectOf(PropTypes.object, PropTypes.string, PropTypes.array),
 };
 
-export default connect(mapStateToProps, null)(Form);
+export default Form;

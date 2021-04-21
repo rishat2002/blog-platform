@@ -2,42 +2,26 @@ import React, { useState, useEffect } from 'react';
 import './index.scss';
 import { useForm } from 'react-hook-form';
 import { Redirect } from 'react-router';
-import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
-import PropTypes from 'prop-types';
-import * as profileActions from '../../redux/profile-actions';
+import { useDispatch, useSelector } from 'react-redux';
+import { Spin } from 'antd';
 import HeaderAuthorization from '../header/authorization-header';
 import CreateForm from '../form/create-form';
 import InputErrors from '../form/input-errors';
+import { getUpdateUserPut, resetError } from '../../redux/profile-actions';
 
-const EditProfile = ({ profile, getUpdateUserPut, resetError }) => {
-  const { register, handleSubmit, errors } = useForm();
-  const [profileRegisterInfo, setProfileRegisterInfo] = useState({
-    username: '',
-    email: '',
-    password: '',
-    image: '',
-  });
-  const createForm = new CreateForm();
-  const inputError = new InputErrors();
-  const { errors: e } = profile;
+const useUserServError = () => {
+  const profile = useSelector((state) => state.profileReducer);
+  const dispatch = useDispatch();
+  const { errors } = profile;
   const [emailError, setEmailError] = useState(undefined);
   const [usernameError, setUsernameError] = useState(undefined);
   const [imageError, setImageError] = useState(undefined);
   useEffect(() => {
-    setUsernameError(e.username);
-    setEmailError(e.email);
-    setImageError(e.image);
-  }, [profile, e.email, e.username, e.image]);
-  useEffect(() => resetError, [resetError]);
-  const [redirectBool, setRedirectBool] = useState(false);
-  const onSubmit = () => {
-    const { user } = profile;
-    const { token } = user;
-    getUpdateUserPut(profileRegisterInfo, token).then(() => {
-      setRedirectBool(true);
-    });
-  };
+    setUsernameError(errors.username);
+    setEmailError(errors.email);
+    setImageError(errors.image);
+  }, [errors.email, errors.username, errors.image]);
+
   const resetServError = (item) => {
     if (item === 'username') {
       setUsernameError(undefined);
@@ -49,6 +33,48 @@ const EditProfile = ({ profile, getUpdateUserPut, resetError }) => {
       setEmailError(undefined);
     }
   };
+
+  useEffect(() => dispatch(resetError()), [dispatch]);
+
+  return {
+    usernameError,
+    imageError,
+    emailError,
+    resetServError,
+  };
+};
+
+const useSubmit = (profileRegisterInfo) => {
+  const dispatch = useDispatch();
+  const profile = useSelector((state) => state.profileReducer);
+  const [disableSubmit, setDisableSubmit] = useState(true);
+  const [redirectBool, setRedirectBool] = useState(false);
+  return {onSubmit:() => {
+    setDisableSubmit(false);
+    const { user } = profile;
+    const { token } = user;
+    dispatch(getUpdateUserPut(profileRegisterInfo, token)).then(() => {
+      setRedirectBool(true);
+      setDisableSubmit(true);
+    })},
+    disableSubmit,
+    redirectBool
+  }
+};
+
+const EditProfile = () => {
+  const { register, handleSubmit, errors } = useForm();
+  const [profileRegisterInfo, setProfileRegisterInfo] = useState({
+    username: '',
+    email: '',
+    password: '',
+    image: '',
+  });
+  const profile = useSelector((state) => state.profileReducer);
+  const createForm = new CreateForm();
+  const inputError = new InputErrors();
+  const {disableSubmit,redirectBool,onSubmit} = useSubmit(profileRegisterInfo);
+  const { usernameError, imageError, emailError, resetServError } = useUserServError();
   const inputHandlers = createForm.createInputHandlers(profileRegisterInfo, setProfileRegisterInfo, resetServError);
   const redirectComponent =
     redirectBool && Object.keys(profile.errors).length === 0 ? <Redirect to="/articles" /> : null;
@@ -109,35 +135,15 @@ const EditProfile = ({ profile, getUpdateUserPut, resetError }) => {
         </label>
         {inputError.inputValueError('imageError', 'Not valid url', errors)}
         {inputError.servErrorMessage(imageError)}
-        <input type="submit" className="form__submit" value="Save" />
+        {disableSubmit ? (
+          <input type="submit" className="form__submit submit-button" value="Save" />
+        ) : (
+          <Spin className="form__submit" />
+        )}
       </form>
       {redirectComponent}
     </div>
   );
 };
 
-EditProfile.defaultProps = {
-  profile: { user: {}, errors: {} },
-  getUpdateUserPut: () => {},
-  resetError: () => {},
-};
-
-EditProfile.propTypes = {
-  profile: PropTypes.objectOf(PropTypes.object),
-  getUpdateUserPut: PropTypes.func,
-  resetError: PropTypes.func,
-};
-
-const mapStateToProps = (state) => ({
-  profile: state.profileReducer,
-});
-
-const mapDispatchToProps = (dispatch) => {
-  const profilesBind = bindActionCreators(profileActions, dispatch);
-  return {
-    getUpdateUserPut: profilesBind.getUpdateUserPut,
-    resetError: profilesBind.resetError,
-  };
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(EditProfile);
+export default EditProfile;

@@ -1,32 +1,26 @@
 import React, { useState, useEffect } from 'react';
-import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { Redirect } from 'react-router';
-import { bindActionCreators } from 'redux';
-import { connect } from 'react-redux';
-import { Checkbox } from 'antd';
+import { useDispatch, useSelector } from 'react-redux';
+import { Checkbox, Spin } from 'antd';
 import './index.scss';
 import Header from '../header/header';
-import * as profileActions from '../../redux/profile-actions';
 import CreateForm from '../form/create-form';
 import InputErrors from '../form/input-errors';
+import { getUserSignUp, resetError} from '../../redux/profile-actions';
 
-const SignUp = ({ profile, getUserSignUp, resetError }) => {
-  const { register, handleSubmit, errors } = useForm();
-  const [profileRegisterInfo, setProfileRegisterInfo] = useState({
-    username: '',
-    email: '',
-    password: '',
-    repeatPassword: '',
-  });
-
-  const createForm = new CreateForm();
-  const inputError = new InputErrors();
-  const [check, setChecked] = useState(false);
-  const { errors: e } = profile;
+const useUserServError = () => {
+  const profile = useSelector((state) => state.profileReducer);
+  const dispatch = useDispatch();
   const [emailError, setEmailError] = useState(undefined);
   const [usernameError, setUsernameError] = useState(undefined);
+  const { errors: e } = profile;
+  useEffect(() => {
+    setUsernameError(e.username);
+    setEmailError(e.email);
+  }, [profile, e.email, e.username]);
+  useEffect(() => dispatch(resetError), [dispatch]);
   const resetServError = (item) => {
     if (item === 'username') {
       setUsernameError(undefined);
@@ -35,21 +29,45 @@ const SignUp = ({ profile, getUserSignUp, resetError }) => {
       setEmailError(undefined);
     }
   };
-  const inputHandlers = createForm.createInputHandlers(profileRegisterInfo, setProfileRegisterInfo, resetServError);
-  useEffect(() => {
-    setUsernameError(e.username);
-    setEmailError(e.email);
-  }, [profile, e.email, e.username]);
+  return {
+    emailError,
+    usernameError,
+    resetServError,
+  };
+};
 
-  useEffect(() => resetError, [resetError]);
+const useSubmit = (profileRegisterInfo) => {
+  const [disableSubmit, setDisableSubmit] = useState(true);
+  const dispatch = useDispatch()
+  return {
+    disableSubmit,
+    onSubmit:() => {
+      setDisableSubmit(false);
+      dispatch(getUserSignUp(profileRegisterInfo)).then(() => {
+        setDisableSubmit(true);
+      });
+    }
+  }
+}
 
+const SignUp = () => {
+  const { register, handleSubmit, errors } = useForm();
+  const profile = useSelector((state) => state.profileReducer);
+  const [profileRegisterInfo, setProfileRegisterInfo] = useState({
+    username: '',
+    email: '',
+    password: '',
+    repeatPassword: ''
+  });
+  const createForm = new CreateForm();
+  const inputError = new InputErrors();
+  const [check, setChecked] = useState(false);
   const onChange = (event) => {
     setChecked(event.target.checked);
   };
-
-  const onSubmit = () => {
-    getUserSignUp(profileRegisterInfo);
-  };
+  const {onSubmit,disableSubmit} =  useSubmit(profileRegisterInfo)
+  const { emailError, usernameError, resetServError } = useUserServError();
+  const inputHandlers = createForm.createInputHandlers(profileRegisterInfo, setProfileRegisterInfo, resetServError);
   const { email, password, repeatPassword, username } = profileRegisterInfo;
   const redirectComponent = Object.keys(profile.user).length !== 0 ? <Redirect to="/sign-in" /> : null;
   return (
@@ -122,7 +140,11 @@ const SignUp = ({ profile, getUserSignUp, resetError }) => {
         <Checkbox onChange={onChange} className="form__checkbox" checked={check}>
           I agree to the processing of my personal information
         </Checkbox>
-        <input type="submit" className="form__submit" value="Create" disabled={!check} />
+        {disableSubmit ? (
+          <input type="submit" className="form__submit submit-button" value="Create" disabled={!check} />
+        ) : (
+          <Spin className="form__submit" />
+        )}
         <div className="form__note">
           Already have an account?
           <Link className="form__note form__note--link" to="/sign-in">
@@ -135,28 +157,4 @@ const SignUp = ({ profile, getUserSignUp, resetError }) => {
   );
 };
 
-SignUp.defaultProps = {
-  profile: { user: {}, errors: {} },
-  getUserSignUp: () => {},
-  resetError: () => {},
-};
-
-SignUp.propTypes = {
-  profile: PropTypes.objectOf(PropTypes.object),
-  getUserSignUp: PropTypes.func,
-  resetError: PropTypes.func,
-};
-
-const mapStateToProps = (state) => ({
-  profile: state.profileReducer,
-});
-
-const mapDispatchToProps = (dispatch) => {
-  const profilesBind = bindActionCreators(profileActions, dispatch);
-  return {
-    getUserSignUp: profilesBind.getUserSignUp,
-    resetError: profilesBind.resetError,
-  };
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(SignUp);
+export default SignUp;

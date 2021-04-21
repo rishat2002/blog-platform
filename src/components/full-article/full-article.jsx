@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { connect } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { Redirect } from 'react-router';
 import PropTypes from 'prop-types';
@@ -7,8 +7,55 @@ import './index.scss';
 import ArticleService from '../../article-service/article-service';
 import HeaderAuthorization from '../header/authorization-header';
 import Header from '../header/header';
+import { dateParse } from '../article/article';
 
-const FullArticle = ({ match, profile }) => {
+
+const useConfirm = (currentArticle) => {
+    const profile = useSelector(state => state.profileReducer)
+    const [confirmBool, setConfirmBool] = useState(false);
+    const [redirectBool, setRedirectBool] = useState(false);
+    const oneClickDeleteHandler = () => {
+        setConfirmBool(true);
+    };
+    const confirmNoHandler = () => {
+        setConfirmBool(false);
+    }
+    const confirmYesHandler = () => {
+        new ArticleService().deleteArticle(profile.user.token, currentArticle.slug).then(() => {
+            setRedirectBool(true);
+        });
+    }
+    return {
+        confirmBool,
+        oneClickDeleteHandler,
+        confirmNoHandler,
+        confirmYesHandler,
+        redirectBool
+    }
+}
+ /* eslint-disable */
+const useLike = (favoritesCount) => {
+    const [like, setLike] = useState(false);
+    let buttonLikeClassName = 'article__like-button-false';
+    let count = favoritesCount
+    if (like) {
+        count = count+1;
+        buttonLikeClassName = 'article__like-button-true';
+    }
+    const likeHandler = (event) => {
+        setLike(!like);
+        event.preventDefault();
+    }
+    return {
+        likeHandler,
+        buttonLikeClassName,
+        count
+    }
+}
+/* eslint-enable */
+
+const FullArticle = ({ match }) => {
+  const profile = useSelector((state) => state.profileReducer);
   const [currentArticle, setCurrentArticle] = useState({
     author: { username: '', image: '' },
     title: '',
@@ -22,16 +69,14 @@ const FullArticle = ({ match, profile }) => {
       setCurrentArticle(res.article);
     });
   }, [match.params.id]);
-  const [confirmBool, setConfirmBool] = useState(false);
-  const [redirectBool, setRedirectBool] = useState(false);
-  let { favoritesCount } = currentArticle;
-  const { author, title, body, tagList, description } = currentArticle;
-  const [like, setLike] = useState(false);
-  let buttonLikeClassName = 'article__like-button-false';
-  if (like) {
-    favoritesCount = +1;
-    buttonLikeClassName = 'article__like-button-true';
+
+  const { favoritesCount } = currentArticle;
+  const { author, title, body, tagList, description, createdAt } = currentArticle;
+  let formatDate = ' ';
+  if (createdAt) {
+    formatDate = dateParse(createdAt);
   }
+  const {confirmBool, oneClickDeleteHandler, confirmNoHandler, confirmYesHandler ,redirectBool} = useConfirm()
   const confirmForm = (
     <section className="article__confirm">
       <div className="article__confirm-img" />
@@ -39,27 +84,20 @@ const FullArticle = ({ match, profile }) => {
       <button
         type="button"
         className="article__confirm-no"
-        onClick={() => {
-          setConfirmBool(false);
-        }}
+        onClick={confirmNoHandler}
       >
         No
       </button>
       <button
         className="article__confirm-yes"
-        onClick={() => {
-          new ArticleService().deleteArticle(profile.user.token, currentArticle.slug);
-          setRedirectBool(true);
-        }}
+        onClick={confirmYesHandler}
         type="button"
       >
         Yes
       </button>
     </section>
   );
-  const oneClickDeleteHandler = () => {
-    setConfirmBool(true);
-  };
+  const {likeHandler,buttonLikeClassName,count} = useLike(favoritesCount)
   const { username, image } = author;
   const tags = tagList.map((item) => <li className="article__tag">{item}</li>);
   const header = Object.keys(profile.user).length !== 0 ? <HeaderAuthorization /> : <Header />;
@@ -92,12 +130,9 @@ const FullArticle = ({ match, profile }) => {
             <h2 className="article__title">{title}</h2>
             <button
               className={buttonLikeClassName}
-              onClick={(event) => {
-                setLike(!like);
-                event.preventDefault();
-              }}
+              onClick={likeHandler}
             />
-            <div className={'article__like-count'}>{favoritesCount}</div>
+            <div className={'article__like-count'}>{count}</div>
           </div>
           <ul className="article__tag-list">{tags}</ul>
           <div className="article__blog-text">{description}</div>
@@ -106,7 +141,7 @@ const FullArticle = ({ match, profile }) => {
           <div style={{ display: 'flex' }}>
             <div>
               <h3 className="article__full-profile-name">{username}</h3>
-              <div className="article__profile-date">March 5, 2020</div>
+              <div className="article__profile-date">{formatDate}</div>
             </div>
             <img src={image} alt="" className="article__profile-avatar" />
           </div>
@@ -131,19 +166,12 @@ const markDownParse = (markDown) => {
 };
 /* eslint-enable */
 
-const mapStateToProps = (state) => ({
-  articleList: state.articleReducer,
-  profile: state.profileReducer,
-});
-
 FullArticle.defaultProps = {
   match: { params: {} },
-  profile: { errors: {}, user: {} },
 };
 
 FullArticle.propTypes = {
   match: PropTypes.objectOf(PropTypes.any),
-  profile: PropTypes.objectOf(PropTypes.object),
 };
 
-export default connect(mapStateToProps, null)(FullArticle);
+export default FullArticle;

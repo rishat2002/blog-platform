@@ -1,20 +1,22 @@
 import { Link } from 'react-router-dom';
-import PropTypes from 'prop-types';
 import React from 'react';
-import { bindActionCreators } from 'redux';
-import { connect } from 'react-redux';
-import * as profileActions from '../../redux/profile-actions';
+import { useDispatch, useSelector } from 'react-redux';
 import './index.scss';
+import { getUserLogOut } from '../../redux/profile-actions';
 
-const HeaderAuthorization = ({ profile, getUserLogOut }) => {
+const HeaderAuthorization = () => {
+  const profile = useSelector((state) => state.profileReducer);
+  const dispatch = useDispatch();
   const { user } = profile;
   const { username, image } = user;
   const logOutOnclickHandler = () => {
-    getUserLogOut();
+    dispatch(getUserLogOut());
   };
   return (
     <header className="content__header">
-      <h2 className="content__header-title">Realworld Blog</h2>
+      <Link className="content__header-title" to="/sign-in">
+        Realworld Blog
+      </Link>
       <Link className="content__header-link-create-article green-button" to="/create-article">
         Create article
       </Link>
@@ -29,24 +31,4 @@ const HeaderAuthorization = ({ profile, getUserLogOut }) => {
   );
 };
 
-const mapStateToProps = (state) => ({
-  profile: state.profileReducer,
-});
-const mapDispatchToProps = (dispatch) => {
-  const profilesBind = bindActionCreators(profileActions, dispatch);
-  return {
-    getUserLogOut: profilesBind.getUserLogOut,
-  };
-};
-
-HeaderAuthorization.defaultProps = {
-  profile: {},
-  getUserLogOut: () => {},
-};
-
-HeaderAuthorization.propTypes = {
-  profile: PropTypes.objectOf(PropTypes.object),
-  getUserLogOut: PropTypes.func,
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(HeaderAuthorization);
+export default HeaderAuthorization;

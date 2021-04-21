@@ -1,30 +1,17 @@
+import ServConfig from './serv-config';
+
 class ArticleService {
-  apiBase = 'https://conduit.productionready.io/api/';
-
-  api = ``;
-
-  async getResource(url) {
-    const res = await fetch(`${this.apiBase}${url}`);
-    if (!res.ok) {
-      throw new Error(`Could not fetch ${url}, received ${res.status}`);
-    }
-    return res.json();
-  }
+  servConfig = new ServConfig();
 
   async noInitArticles(limit, offset) {
-    return this.getResource(`articles?limit=${limit}&offset=${offset}`);
-  }
-
-  async initArticles(author, limit, offset) {
-    const result = await this.getResource(`articles?author=${author}&${limit}&${offset}`);
-    return result;
+    return this.servConfig.getResource(`articles?limit=${limit}&offset=${offset}`);
   }
 
   async createArticle(articleInfo, token) {
     const servObj = {
       article: articleInfo,
     };
-    const response = await fetch(`${this.apiBase}articles`, {
+    const response = await fetch(`${this.servConfig.apiBase}articles`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json;charset=utf-8',
@@ -38,7 +25,7 @@ class ArticleService {
 
   async editArticle(articleInfo, token, slug) {
     const servObj = { article: articleInfo };
-    const response = await fetch(`${this.apiBase}articles/${slug}`, {
+    const response = await fetch(`${this.servConfig.apiBase}articles/${slug}`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json;charset=utf-8',
@@ -51,7 +38,7 @@ class ArticleService {
   }
 
   async deleteArticle(token, slug) {
-    const response = await fetch(`${this.apiBase}articles/${slug}`, {
+    const response = await fetch(`${this.servConfig.apiBase}articles/${slug}`, {
       method: 'DELETE',
       headers: {
         'Content-Type': 'application/json;charset=utf-8',
@@ -63,7 +50,7 @@ class ArticleService {
   }
 
   async getCurrentArticle(slug) {
-    const result = await this.getResource(`articles/${slug}`);
+    const result = await this.servConfig.getResource(`articles/${slug}`);
     return result;
   }
 }

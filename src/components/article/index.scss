@@ -59,6 +59,8 @@
   margin: 0px;
 }
 .article__profile-date {
+  display: flex;
+  justify-content: flex-end;
   font-size: 12px;
   line-height: 22px;
   color: $text-color-secondary;

@@ -4,7 +4,9 @@ import './index.scss';
 
 const Header = () => (
   <header className="content__header">
-    <h2 className="content__header-title">Realworld Blog</h2>
+    <Link className="content__header-title" to="/sign-in">
+      Realworld Blog
+    </Link>
     <Link className="content__header-link-in" to="/sign-in">
       Sign in
     </Link>

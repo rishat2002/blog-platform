@@ -69,19 +69,20 @@ const SignIn = () => {
               pattern: /\S+@\S+\.\S+/,
             })}
             name="emailError"
+            disabled={!disableSubmit}
           />
         </label>
         {inputValueError('emailError', 'Enter a valid email', errors)}
         <label className="form__label">
           Password
           <input
-            type="password"
             className="form__input"
             name="passwordError"
             ref={register({ required: true, maxLength: 40, minLength: 8 })}
             placeholder="Password"
             onChange={inputHandlers.password}
             value={password}
+            disabled={!disableSubmit}
           />
         </label>
         {inputValueError('passwordError', 'Your password needs to be at least 8 characters.', errors)}

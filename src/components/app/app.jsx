@@ -11,6 +11,7 @@ import EditProfile from '../authorization/edit-profile';
 import CreateArticle from '../create-edit-article/create-article';
 import EditArticle from '../create-edit-article/edit-article';
 import { getUserLogOut, initUser } from '../../redux/profile-actions';
+import {Redirect, Switch} from "react-router";
 
 const App = () => {
   const dispatch = useDispatch();
@@ -24,13 +25,18 @@ const App = () => {
   return (
     <div className="content">
       <BrowserRouter>
-        <Route exact path="/articles" component={Articles} />
+        <Switch>
         <Route path="/articles/:id" component={FullArticle} />
         <Route path="/sign-in" component={SignIn} />
         <Route path="/sign-up" component={SignUp} />
         <Route exact path="/profile" component={EditProfile} />
         <Route exact path="/edit-article" component={EditArticle} />
         <Route exact path="/create-article" component={CreateArticle} />
+        <Route exact path="/articles" component={Articles} />
+        <Route exact path="*">
+          <Redirect to='/articles'/>
+        </Route>
+        </Switch>
       </BrowserRouter>
     </div>
   );

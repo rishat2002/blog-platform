@@ -25,7 +25,8 @@ const ArticleList = () => {
   const [paginationFlag, setPaginationFlag] = useState(false);
   const dispatch = useDispatch();
   useEffect(() => {
-    dispatch(noInitArticlesFetch(current * 20, current * 20 - 20)).then(() => {
+    setPaginationFlag(false)
+    dispatch(noInitArticlesFetch(current * 10, current * 10 - 10)).then(() => {
       setPaginationFlag(true);
     });
   }, [current, dispatch]);
@@ -39,7 +40,7 @@ const ArticleList = () => {
   return (
     <div>
       <div style={{ width: '75%', margin: '0 auto' }}>{list}</div>
-      {paginationFlag && list.length > 19 ? (
+      {paginationFlag && list.length > 9 ? (
         <Pagination
           defaultCurrent={1}
           total={articleList.articlesCount}

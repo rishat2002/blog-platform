@@ -108,7 +108,7 @@ const SignUp = () => {
         <label className="form__label">
           Password
           <input
-            type="password"
+
             className="form__input"
             name="passwordError"
             ref={register({ required: true, maxLength: 40, minLength: 8 })}

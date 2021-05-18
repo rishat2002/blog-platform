@@ -1,22 +1,22 @@
-import React, { useState, useEffect } from 'react';
-import { useForm } from 'react-hook-form';
-import { useSelector } from 'react-redux';
-import { Redirect } from 'react-router';
-import PropTypes from 'prop-types';
-import '../authorization/index.scss';
-import { Spin } from 'antd';
+import React, { useState, useEffect } from "react";
+import { useForm } from "react-hook-form";
+import { useSelector } from "react-redux";
+import { Redirect } from "react-router";
+import PropTypes from "prop-types";
+import "../authorization/index.scss";
+import { Spin } from "antd";
 
 /* eslint-disable */
 const TagInput = ({ tagInfo, deleteFunc }) => {
   const { register } = useForm();
-  const [tagValue, setTagValue] = useState('');
+  const [tagValue, setTagValue] = useState("");
   const handleChangeTag = (event) => {
     setTagValue(event.target.value);
     tagInfo.tagName = event.target.value;
   };
   /* eslint-enable */
   return (
-    <div style={{ display: 'flex' }}>
+    <div style={{ display: "flex" }}>
       <input
         className="form__input"
         placeholder="Tag"
@@ -67,7 +67,7 @@ const useTagProps = (tagMass, setTagMass) => {
     if (tagMass.length !== 0) {
       key = tagMass[tagMass.length - 1].key + 1;
     }
-    const newTag = { key, tagName: '', id: key };
+    const newTag = { key, tagName: "", id: key };
     setTagMass([...tagMass, newTag]);
   };
   return {
@@ -81,9 +81,9 @@ const Form = ({ formTitle, sendDataFunc }) => {
   const profile = useSelector((state) => state.profileReducer);
   const { register, handleSubmit, errors } = useForm();
   const [articleInfo, setArticleInfo] = useState({
-    title: '',
-    description: '',
-    body: '',
+    title: "",
+    description: "",
+    body: "",
   });
   const [tagMass, setTagMass] = useState([]);
   const [postForm, setPostForm] = useState(false);
@@ -93,7 +93,7 @@ const Form = ({ formTitle, sendDataFunc }) => {
     articleInfo
   );
   useEffect(() => {
-    if (formTitle === 'Edit article') {
+    if (formTitle === "Edit article") {
       setArticleInfo({ ...currentArticle });
     }
   }, [currentArticle, formTitle]);
@@ -208,7 +208,7 @@ TagInput.propTypes = {
 };
 
 Form.defaultProps = {
-  formTitle: '',
+  formTitle: "",
   sendDataFunc: () => {},
 };
 

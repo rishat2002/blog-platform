@@ -1,4 +1,4 @@
-import ServConfig from './serv-config';
+import ServConfig from "./serv-config";
 
 class ArticleService {
   servConfig = new ServConfig();
@@ -14,9 +14,9 @@ class ArticleService {
       article: articleInfo,
     };
     const response = await fetch(`${this.servConfig.apiBase}articles`, {
-      method: 'POST',
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json;charset=utf-8',
+        "Content-Type": "application/json;charset=utf-8",
         Authorization: `Token ${token}`,
       },
       body: JSON.stringify(servObj),
@@ -28,9 +28,9 @@ class ArticleService {
   async editArticle(articleInfo, token, slug) {
     const servObj = { article: articleInfo };
     const response = await fetch(`${this.servConfig.apiBase}articles/${slug}`, {
-      method: 'PUT',
+      method: "PUT",
       headers: {
-        'Content-Type': 'application/json;charset=utf-8',
+        "Content-Type": "application/json;charset=utf-8",
         Authorization: `Token ${token}`,
       },
       body: JSON.stringify(servObj),
@@ -41,9 +41,9 @@ class ArticleService {
 
   async deleteArticle(token, slug) {
     const response = await fetch(`${this.servConfig.apiBase}articles/${slug}`, {
-      method: 'DELETE',
+      method: "DELETE",
       headers: {
-        'Content-Type': 'application/json;charset=utf-8',
+        "Content-Type": "application/json;charset=utf-8",
         Authorization: `Token ${token}`,
       },
     });

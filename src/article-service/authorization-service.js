@@ -1,13 +1,13 @@
-import ServConfig from './serv-config';
+import ServConfig from "./serv-config";
 
 class AuthorizationService {
   servConfig = new ServConfig();
 
   async signUpPost(profileInfo) {
     const response = await fetch(`${this.servConfig.apiBase}users`, {
-      method: 'POST',
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json;charset=utf-8',
+        "Content-Type": "application/json;charset=utf-8",
       },
       body: JSON.stringify(profileInfo),
     });
@@ -17,9 +17,9 @@ class AuthorizationService {
 
   async signInPost(profileInfo) {
     const response = await fetch(`${this.servConfig.apiBase}users/login`, {
-      method: 'POST',
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json;charset=utf-8',
+        "Content-Type": "application/json;charset=utf-8",
       },
       body: JSON.stringify(profileInfo),
     });
@@ -29,9 +29,9 @@ class AuthorizationService {
 
   async updateUserPut(profileInfo, token) {
     const response = await fetch(`${this.servConfig.apiBase}user`, {
-      method: 'PUT',
+      method: "PUT",
       headers: {
-        'Content-Type': 'application/json;charset=utf-8',
+        "Content-Type": "application/json;charset=utf-8",
         Authorization: `Token ${token}`,
       },
       body: JSON.stringify(profileInfo),

@@ -1,29 +1,29 @@
-import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
-import { Redirect } from 'react-router';
-import { useDispatch, useSelector } from 'react-redux';
-import { Checkbox, Spin } from 'antd';
-import * as Yup from 'yup';
-import { Formik, Form, Field } from 'formik';
-import './index.scss';
-import Header from '../header/header';
-import InputErrors from '../form/input-errors';
-import { getUserSignUp, resetError } from '../../redux/profile-actions';
+import React, { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
+import { Redirect } from "react-router";
+import { useDispatch, useSelector } from "react-redux";
+import { Checkbox, Spin } from "antd";
+import * as Yup from "yup";
+import { Formik, Form, Field } from "formik";
+import "./index.scss";
+import Header from "../header/header";
+import InputErrors from "../form/input-errors";
+import { getUserSignUp, resetError } from "../../redux/profile-actions";
 
 const BasicFormSchema = Yup.object().shape({
-  email: Yup.string().email('Invalid email address').required('Required'),
+  email: Yup.string().email("Invalid email address").required("Required"),
   username: Yup.string()
-    .min(3, 'Must be longer than 3 characters')
-    .required('Required'),
+    .min(3, "Must be longer than 3 characters")
+    .required("Required"),
   password: Yup.string()
-    .min(8, 'Must be longer than 8 characters')
-    .required('Required'),
+    .min(8, "Must be longer than 8 characters")
+    .required("Required"),
 });
 
 const validateRepeatPassword = (password) => (value) => {
   let error;
   if (value !== password) {
-    error = 'Passwords must match';
+    error = "Passwords must match";
   }
   console.log(value);
   return error;
@@ -41,10 +41,10 @@ const useUserServError = () => {
   }, [profile, e.email, e.username]);
   useEffect(() => dispatch(resetError), [dispatch]);
   const resetServError = (item) => {
-    if (item === 'username') {
+    if (item === "username") {
       setUsernameError(undefined);
     }
-    if (item === 'email') {
+    if (item === "email") {
       setEmailError(undefined);
     }
   };
@@ -72,8 +72,8 @@ const SignUp = () => {
   const [disableSubmit, setDisableSubmit] = useState(true);
   const inputError = new InputErrors();
   const [check, setChecked] = useState(false);
-  const [password, setPassword] = useState('');
-  const dispatch = useDispatch()
+  const [password, setPassword] = useState("");
+  const dispatch = useDispatch();
   const onChange = (event) => {
     setChecked(event.target.checked);
   };
@@ -91,10 +91,10 @@ const SignUp = () => {
       <Header />
       <Formik
         initialValues={{
-          email: '',
-          password: '',
-          username: '',
-          repeatPassword: '',
+          email: "",
+          password: "",
+          username: "",
+          repeatPassword: "",
         }}
         validationSchema={BasicFormSchema}
         onSubmit={onSubmit}

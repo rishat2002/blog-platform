@@ -1,14 +1,14 @@
-import React, { useState, useEffect } from 'react';
-import { useSelector } from 'react-redux';
-import { Link } from 'react-router-dom';
-import { Redirect } from 'react-router';
-import PropTypes from 'prop-types';
-import { Spin } from 'antd';
-import './index.scss';
-import ArticleService from '../../article-service/article-service';
-import HeaderAuthorization from '../header/authorization-header';
-import Header from '../header/header';
-import { dateParse } from '../article/article';
+import React, { useState, useEffect } from "react";
+import { useSelector } from "react-redux";
+import { Link } from "react-router-dom";
+import { Redirect } from "react-router";
+import PropTypes from "prop-types";
+import { Spin } from "antd";
+import "./index.scss";
+import ArticleService from "../../article-service/article-service";
+import HeaderAuthorization from "../header/authorization-header";
+import Header from "../header/header";
+import { dateParse } from "../article/article";
 
 const useConfirm = (currentArticle) => {
   const profile = useSelector((state) => state.profileReducer);
@@ -38,11 +38,11 @@ const useConfirm = (currentArticle) => {
 /* eslint-disable */
 const useLike = (favoritesCount) => {
   const [like, setLike] = useState(false);
-  let buttonLikeClassName = 'article__like-button-false';
+  let buttonLikeClassName = "article__like-button-false";
   let count = favoritesCount;
   if (like) {
     count = count + 1;
-    buttonLikeClassName = 'article__like-button-true';
+    buttonLikeClassName = "article__like-button-true";
   }
   const likeHandler = (event) => {
     setLike(!like);
@@ -59,11 +59,11 @@ const useLike = (favoritesCount) => {
 const FullArticle = ({ match }) => {
   const profile = useSelector((state) => state.profileReducer);
   const [currentArticle, setCurrentArticle] = useState({
-    author: { username: '', image: '' },
-    title: '',
-    body: '',
+    author: { username: "", image: "" },
+    title: "",
+    body: "",
     tagList: [],
-    description: '',
+    description: "",
   });
   const [load, setLoad] = useState(false);
   useEffect(() => {
@@ -84,7 +84,7 @@ const FullArticle = ({ match }) => {
     description,
     createdAt,
   } = currentArticle;
-  let formatDate = ' ';
+  let formatDate = " ";
   if (createdAt) {
     formatDate = dateParse(createdAt);
   }
@@ -129,10 +129,10 @@ const FullArticle = ({ match }) => {
   /* eslint-disable */
   const editDeleteButtons =
     profile.user.username === author.username ? (
-      <div style={{ marginTop: 30, position: 'relative' }}>
+      <div style={{ marginTop: 30, position: "relative" }}>
         {!confirmBool ? (
           <Link
-            className={'article__profile-button article__profile-button--edit'}
+            className={"article__profile-button article__profile-button--edit"}
             to="/edit-article"
           >
             Edit
@@ -141,8 +141,8 @@ const FullArticle = ({ match }) => {
           confirmForm
         )}
         <button
-          type={'button'}
-          className={'article__profile-button article__profile-button--delete'}
+          type={"button"}
+          className={"article__profile-button article__profile-button--delete"}
           onClick={oneClickDeleteHandler}
         >
           Delete
@@ -156,16 +156,16 @@ const FullArticle = ({ match }) => {
       {header}
       <div className="article article--full">
         <div>
-          <div style={{ display: 'flex' }}>
+          <div style={{ display: "flex" }}>
             <h2 className="article__title">{title}</h2>
             <button className={buttonLikeClassName} onClick={likeHandler} />
-            <div className={'article__like-count'}>{count}</div>
+            <div className={"article__like-count"}>{count}</div>
           </div>
           <ul className="article__tag-list">{tags}</ul>
           <div className="article__blog-text">{description}</div>
         </div>
         <div className="article__profile">
-          <div style={{ display: 'flex' }}>
+          <div style={{ display: "flex" }}>
             <div>
               <h3 className="article__full-profile-name">{username}</h3>
               <div className="article__profile-date">{formatDate}</div>
@@ -186,7 +186,7 @@ const FullArticle = ({ match }) => {
 
 /* eslint-disable */
 const markDownParse = (markDown) => {
-  var MarkdownIt = require('markdown-it'),
+  var MarkdownIt = require("markdown-it"),
     md = new MarkdownIt();
   var result = md.render(markDown);
   return result;

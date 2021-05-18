@@ -1,20 +1,20 @@
-import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
-import { Spin } from 'antd';
-import './index.scss';
-import * as Yup from 'yup';
-import { Formik, Form, Field } from 'formik';
-import Header from '../header/header';
-import CreateForm from '../form/create-form';
-import InputErrors from '../form/input-errors';
-import { getUserSignIn, resetError } from '../../redux/profile-actions';
+import React, { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { Spin } from "antd";
+import "./index.scss";
+import * as Yup from "yup";
+import { Formik, Form, Field } from "formik";
+import Header from "../header/header";
+import CreateForm from "../form/create-form";
+import InputErrors from "../form/input-errors";
+import { getUserSignIn, resetError } from "../../redux/profile-actions";
 
 const BasicFormSchema = Yup.object().shape({
-  email: Yup.string().email('Invalid email address').required('Required'),
+  email: Yup.string().email("Invalid email address").required("Required"),
   password: Yup.string()
-    .min(8, 'Must be longer than 8 characters')
-    .required('Required'),
+    .min(8, "Must be longer than 8 characters")
+    .required("Required"),
 });
 
 const useSubmit = (setDisableSubmit) => {
@@ -53,11 +53,11 @@ const SignIn = () => {
   const { servError } = useError();
   const redirectComponent = createForm.getRedirectComponent(
     Object.keys(profile.user).length !== 0,
-    '/articles'
+    "/articles"
   );
   const errorMessage =
     Object.keys(servError).length !== 0
-      ? servErrorMessage('incorrect password and login')
+      ? servErrorMessage("incorrect password and login")
       : null;
   useEffect(() => {
     return () => {
@@ -69,8 +69,8 @@ const SignIn = () => {
       <Header />
       <Formik
         initialValues={{
-          email: '',
-          password: '',
+          email: "",
+          password: "",
         }}
         validationSchema={BasicFormSchema}
         onSubmit={onSubmit}
@@ -89,7 +89,7 @@ const SignIn = () => {
                 <div className="error form__error">{errors.email}</div>
               ) : null}
             </label>
-            {inputValueError('emailError', 'Enter a valid email', errors)}
+            {inputValueError("emailError", "Enter a valid email", errors)}
             <label className="form__label">
               Password
               <Field
@@ -115,15 +115,15 @@ const SignIn = () => {
             <div className="form__note">
               Already have an account?
               <Link to="/sign-up" className="form__note form__note--link">
-                {' Sign Up.'}
+                {" Sign Up."}
               </Link>
             </div>
             {redirectComponent}
-          </Form>)}
-            />
+          </Form>
+        )}
+      />
     </div>
-  )
-}
-
+  );
+};
 
 export default SignIn;

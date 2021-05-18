@@ -1,5 +1,5 @@
 class ServConfig {
-  apiBase = 'https://conduit.productionready.io/api/';
+  apiBase = "https://conduit.productionready.io/api/";
 
   api = ``;
 

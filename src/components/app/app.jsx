@@ -1,17 +1,17 @@
-import React, { useEffect } from 'react';
-import 'antd/dist/antd.css';
-import './index.scss';
-import { BrowserRouter, Route } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
-import { Redirect, Switch } from 'react-router';
-import FullArticle from '../full-article/full-article';
-import SignIn from '../authorization/sign-in';
-import SignUp from '../authorization/sign-up';
-import Articles from '../articles/articles';
-import EditProfile from '../authorization/edit-profile';
-import CreateArticle from '../create-edit-article/create-article';
-import EditArticle from '../create-edit-article/edit-article';
-import { getUserLogOut, initUser } from '../../redux/profile-actions';
+import React, { useEffect } from "react";
+import "antd/dist/antd.css";
+import "./index.scss";
+import { BrowserRouter, Route } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { Redirect, Switch } from "react-router";
+import FullArticle from "../full-article/full-article";
+import SignIn from "../authorization/sign-in";
+import SignUp from "../authorization/sign-up";
+import Articles from "../articles/articles";
+import EditProfile from "../authorization/edit-profile";
+import CreateArticle from "../create-edit-article/create-article";
+import EditArticle from "../create-edit-article/edit-article";
+import { getUserLogOut, initUser } from "../../redux/profile-actions";
 
 const App = () => {
   const dispatch = useDispatch();

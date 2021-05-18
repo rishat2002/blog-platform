@@ -1,10 +1,10 @@
-import React from 'react';
-import 'antd/dist/antd.css';
-import { useSelector } from 'react-redux';
-import ArticleList from '../article-list/article-list';
-import './index.scss';
-import HeaderAuthorization from '../header/authorization-header';
-import Header from '../header/header';
+import React from "react";
+import "antd/dist/antd.css";
+import { useSelector } from "react-redux";
+import ArticleList from "../article-list/article-list";
+import "./index.scss";
+import HeaderAuthorization from "../header/authorization-header";
+import Header from "../header/header";
 
 const Articles = () => {
   const profile = useSelector((state) => state.profileReducer);

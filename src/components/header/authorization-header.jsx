@@ -1,8 +1,8 @@
-import { Link } from 'react-router-dom';
-import React from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import './index.scss';
-import { getUserLogOut } from '../../redux/profile-actions';
+import { Link } from "react-router-dom";
+import React from "react";
+import { useDispatch, useSelector } from "react-redux";
+import "./index.scss";
+import { getUserLogOut } from "../../redux/profile-actions";
 
 const HeaderAuthorization = () => {
   const profile = useSelector((state) => state.profileReducer);

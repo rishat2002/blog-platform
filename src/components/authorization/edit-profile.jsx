@@ -1,13 +1,13 @@
-import React, { useState, useEffect } from 'react';
-import './index.scss';
-import { Redirect } from 'react-router';
-import { useDispatch, useSelector } from 'react-redux';
-import { Form, Formik, Field } from 'formik';
-import * as Yup from 'yup';
-import { Spin } from 'antd';
-import HeaderAuthorization from '../header/authorization-header';
-import InputErrors from '../form/input-errors';
-import { getUpdateUserPut, resetError } from '../../redux/profile-actions';
+import React, { useState, useEffect } from "react";
+import "./index.scss";
+import { Redirect } from "react-router";
+import { useDispatch, useSelector } from "react-redux";
+import { Form, Formik, Field } from "formik";
+import * as Yup from "yup";
+import { Spin } from "antd";
+import HeaderAuthorization from "../header/authorization-header";
+import InputErrors from "../form/input-errors";
+import { getUpdateUserPut, resetError } from "../../redux/profile-actions";
 
 const useUserServError = () => {
   const profile = useSelector((state) => state.profileReducer);
@@ -23,13 +23,13 @@ const useUserServError = () => {
   }, [errors.email, errors.username, errors.image]);
 
   const resetServError = (item) => {
-    if (item === 'username') {
+    if (item === "username") {
       setUsernameError(undefined);
     }
-    if (item === 'email') {
+    if (item === "email") {
       setEmailError(undefined);
     }
-    if (item === 'image') {
+    if (item === "image") {
       setEmailError(undefined);
     }
   };
@@ -45,13 +45,13 @@ const useUserServError = () => {
 };
 
 const BasicFormSchema = Yup.object().shape({
-  email: Yup.string().email('Invalid email address').required('Required'),
+  email: Yup.string().email("Invalid email address").required("Required"),
   username: Yup.string()
-    .min(3, 'Must be longer than 3 characters')
-    .required('Required'),
+    .min(3, "Must be longer than 3 characters")
+    .required("Required"),
   password: Yup.string()
-    .min(8, 'Must be longer than 8 characters')
-    .required('Required'),
+    .min(8, "Must be longer than 8 characters")
+    .required("Required"),
   image: Yup.string(),
 });
 
@@ -77,7 +77,7 @@ const EditProfile = () => {
   const [redirectBool, setRedirectBool] = useState(false);
   const inputError = new InputErrors();
   const { onSubmit } = useSubmit(setDisableSubmit, setRedirectBool);
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
   const { usernameError, imageError, emailError } = useUserServError();
   const redirectComponent =
     redirectBool && Object.keys(profile.errors).length === 0 ? (
@@ -93,10 +93,10 @@ const EditProfile = () => {
       <HeaderAuthorization />
       <Formik
         initialValues={{
-          username: '',
-          email: '',
-          password: '',
-          image: '',
+          username: "",
+          email: "",
+          password: "",
+          image: "",
         }}
         validationSchema={BasicFormSchema}
         onSubmit={onSubmit}

@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { Pagination, Spin } from 'antd';
-import noInitArticlesFetch from '../../redux/articles-actions';
-import './index.scss';
-import Article from '../article/article';
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { Pagination, Spin } from "antd";
+import noInitArticlesFetch from "../../redux/articles-actions";
+import "./index.scss";
+import Article from "../article/article";
 
 const useArticleList = () => {
   const articleList = useSelector((state) => state.articleReducer);
@@ -25,7 +25,7 @@ const ArticleList = () => {
   const [paginationFlag, setPaginationFlag] = useState(false);
   const dispatch = useDispatch();
   useEffect(() => {
-    setPaginationFlag(false)
+    setPaginationFlag(false);
     dispatch(noInitArticlesFetch(current * 10, current * 10 - 10)).then(() => {
       setPaginationFlag(true);
     });
@@ -39,7 +39,7 @@ const ArticleList = () => {
   }
   return (
     <div>
-      <div style={{ width: '75%', margin: '0 auto' }}>{list}</div>
+      <div style={{ width: "75%", margin: "0 auto" }}>{list}</div>
       {paginationFlag && list.length > 9 ? (
         <Pagination
           defaultCurrent={1}

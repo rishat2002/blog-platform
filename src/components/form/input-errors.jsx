@@ -15,7 +15,9 @@ class InputErrors {
   };
 
   inputValueError = (errorName, message, useFormError) =>
-    useFormError[errorName] && <div className="error form__error">{message}</div>;
+    useFormError[errorName] && (
+      <div className="error form__error">{message}</div>
+    );
 }
 
 export default InputErrors;

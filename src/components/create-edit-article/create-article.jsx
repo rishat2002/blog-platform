@@ -5,7 +5,8 @@ import ArticleService from '../../article-service/article-service';
 import '../authorization/index.scss';
 
 const CreateArticle = () => {
-  const postNewArticle = (articleInfo, token) => new ArticleService().createArticle(articleInfo, token);
+  const postNewArticle = (articleInfo, token) =>
+    new ArticleService().createArticle(articleInfo, token);
   return (
     <div>
       <HeaderAuthorization />

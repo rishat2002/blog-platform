@@ -1,14 +1,33 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { useForm } from 'react-hook-form';
 import { Redirect } from 'react-router';
 import { useDispatch, useSelector } from 'react-redux';
 import { Checkbox, Spin } from 'antd';
+import * as Yup from 'yup';
+import { Formik, Form, Field } from 'formik';
 import './index.scss';
 import Header from '../header/header';
-import CreateForm from '../form/create-form';
 import InputErrors from '../form/input-errors';
-import { getUserSignUp, resetError} from '../../redux/profile-actions';
+import { getUserSignUp, resetError } from '../../redux/profile-actions';
+
+const BasicFormSchema = Yup.object().shape({
+  email: Yup.string().email('Invalid email address').required('Required'),
+  username: Yup.string()
+    .min(3, 'Must be longer than 3 characters')
+    .required('Required'),
+  password: Yup.string()
+    .min(8, 'Must be longer than 8 characters')
+    .required('Required'),
+});
+
+const validateRepeatPassword = (password) => (value) => {
+  let error;
+  if (value !== password) {
+    error = 'Passwords must match';
+  }
+  console.log(value);
+  return error;
+};
 
 const useUserServError = () => {
   const profile = useSelector((state) => state.profileReducer);
@@ -36,123 +55,140 @@ const useUserServError = () => {
   };
 };
 
-const useSubmit = (profileRegisterInfo) => {
-  const [disableSubmit, setDisableSubmit] = useState(true);
-  const dispatch = useDispatch()
+const useSubmit = (setDisableSubmit) => {
+  const dispatch = useDispatch();
   return {
-    disableSubmit,
-    onSubmit:() => {
+    onSubmit: (profileRegisterInfo) => {
       setDisableSubmit(false);
       dispatch(getUserSignUp(profileRegisterInfo)).then(() => {
         setDisableSubmit(true);
       });
-    }
-  }
-}
+    },
+  };
+};
 
 const SignUp = () => {
-  const { register, handleSubmit, errors } = useForm();
   const profile = useSelector((state) => state.profileReducer);
-  const [profileRegisterInfo, setProfileRegisterInfo] = useState({
-    username: '',
-    email: '',
-    password: '',
-    repeatPassword: ''
-  });
-  const createForm = new CreateForm();
+  const [disableSubmit, setDisableSubmit] = useState(true);
   const inputError = new InputErrors();
   const [check, setChecked] = useState(false);
+  const [password, setPassword] = useState('');
+  const dispatch = useDispatch()
   const onChange = (event) => {
     setChecked(event.target.checked);
   };
-  const {onSubmit,disableSubmit} =  useSubmit(profileRegisterInfo)
-  const { emailError, usernameError, resetServError } = useUserServError();
-  const inputHandlers = createForm.createInputHandlers(profileRegisterInfo, setProfileRegisterInfo, resetServError);
-  const { email, password, repeatPassword, username } = profileRegisterInfo;
-  const redirectComponent = Object.keys(profile.user).length !== 0 ? <Redirect to="/sign-in" /> : null;
+  const { onSubmit } = useSubmit(setDisableSubmit);
+  const { emailError, usernameError } = useUserServError();
+  const redirectComponent =
+    Object.keys(profile.user).length !== 0 ? <Redirect to="/sign-in" /> : null;
+  useEffect(() => {
+    return () => {
+      dispatch(resetError());
+    };
+  }, []);
   return (
     <div>
       <Header />
-      <form onSubmit={handleSubmit(onSubmit)} action="" className="form content__form">
-        <h3 className="form__name">Create new account</h3>
-        <label className="form__label">
-          Username
-          <input
-            className="form__input"
-            name="usernameError"
-            placeholder="Username"
-            onChange={inputHandlers.username}
-            value={username}
-            ref={register({ required: true, minLength: 3, maxLength: 20 })}
-          />
-        </label>
-        {inputError.inputValueError('usernameError', 'Your password needs to be at least 3 characters.', errors)}
-        {inputError.servErrorMessage(usernameError)}
-        <label className="form__label">
-          Email address
-          <input
-            className="form__input"
-            placeholder="Email address"
-            onChange={inputHandlers.email}
-            value={email}
-            ref={register({
-              required: true,
-              minLength: 1,
-              pattern: /\S+@\S+\.\S+/,
-            })}
-            name="emailError"
-          />
-        </label>
-        {inputError.inputValueError('emailError', 'Enter a valid email', errors)}
-        {inputError.servErrorMessage(emailError)}
-        <label className="form__label">
-          Password
-          <input
-
-            className="form__input"
-            name="passwordError"
-            ref={register({ required: true, maxLength: 40, minLength: 8 })}
-            placeholder="Password"
-            onChange={inputHandlers.password}
-            value={password}
-          />
-        </label>
-        {errors.passwordError && <div className="error">Your password needs to be at least 8 characters.</div>}
-        <label className="form__label">
-          Repeat Password
-          <input
-            type="password"
-            className="form__input"
-            name="repeatPasswordError"
-            ref={register({
-              required: true,
-              maxLength: 40,
-              minLength: 8,
-              pattern: new RegExp(password),
-            })}
-            placeholder="Repeat Password"
-            onChange={inputHandlers.repeatPassword}
-            value={repeatPassword}
-          />
-        </label>
-        {errors.repeatPasswordError && <div className="error form__error">Passwords must match</div>}
-        <div className="form__strip" />
-        <Checkbox onChange={onChange} className="form__checkbox" checked={check}>
-          I agree to the processing of my personal information
-        </Checkbox>
-        {disableSubmit ? (
-          <input type="submit" className="form__submit submit-button" value="Create" disabled={!check} />
-        ) : (
-          <Spin className="form__submit" />
+      <Formik
+        initialValues={{
+          email: '',
+          password: '',
+          username: '',
+          repeatPassword: '',
+        }}
+        validationSchema={BasicFormSchema}
+        onSubmit={onSubmit}
+        render={({ errors, touched }) => (
+          <Form className="form content__form">
+            <h3 className="form__name">Create new account</h3>
+            <label className="form__label">
+              Username
+              <Field
+                name="username"
+                type="text"
+                className="form__input"
+                placeholder="Username"
+              />
+              {errors.username && touched.username ? (
+                <div className="error form__error">{errors.username}</div>
+              ) : null}
+            </label>
+            {inputError.servErrorMessage(usernameError)}
+            <label className="form__label">
+              Email address
+              <Field
+                name="email"
+                type="email"
+                className="form__input"
+                placeholder="Email"
+              />
+              {errors.email && touched.email ? (
+                <div className="error form__error">{errors.email}</div>
+              ) : null}
+            </label>
+            {inputError.servErrorMessage(emailError)}
+            <label className="form__label">
+              Password
+              <Field name="password">
+                {({ field, meta }) => {
+                  setTimeout(() => setPassword(field.value), 0);
+                  return (
+                    <div>
+                      <input
+                        {...field}
+                        type="password"
+                        placeholder="Password"
+                        className="form__input"
+                      />
+                      {meta.touched && meta.error && (
+                        <div className="error form__error">{meta.error}</div>
+                      )}
+                    </div>
+                  );
+                }}
+              </Field>
+            </label>
+            <label className="form__label">
+              Repeat Password
+              <Field
+                name="repeatPassword"
+                type="password"
+                className="form__input"
+                placeholder="Repeat password"
+                validate={validateRepeatPassword(password)}
+              />
+              {errors.repeatPassword && touched.repeatPassword ? (
+                <div className="error form__error">{errors.repeatPassword}</div>
+              ) : null}
+            </label>
+            <div className="form__strip" />
+            <Checkbox
+              onChange={onChange}
+              className="form__checkbox"
+              checked={check}
+            >
+              I agree to the processing of my personal information
+            </Checkbox>
+            {disableSubmit ? (
+              <input
+                type="submit"
+                className="form__submit submit-button"
+                value="Create"
+                disabled={!check}
+              />
+            ) : (
+              <Spin className="form__submit" />
+            )}
+            <div className="form__note">
+              Already have an account?
+              <Link className="form__note form__note--link" to="/sign-in">
+                Sign In
+              </Link>
+            </div>
+            {redirectComponent}
+          </Form>
         )}
-        <div className="form__note">
-          Already have an account?
-          <Link className="form__note form__note--link" to="/sign-in">
-            Sign In
-          </Link>
-        </div>
-        {redirectComponent}
-      </form>
+      />
     </div>
   );
 };

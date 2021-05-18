@@ -23,7 +23,7 @@ const useGetLike = (favoritesCount) => {
   const [like, setLike] = useState(false);
   let buttonLikeClassName = 'article__like-button-false';
   if (like) {
-    likeCount = likeCount+1;
+    likeCount = likeCount + 1;
     buttonLikeClassName = 'article__like-button-true';
   }
 
@@ -46,7 +46,10 @@ const useGetLike = (favoritesCount) => {
 export const dateParse = (stringDate) => {
   const dateMass = stringDate.split('-');
   const day = dateMass[2].substr(0, 2);
-  const formatDate = format(new Date(Number(dateMass[0]), Number(dateMass[1]) - 1, day), 'MMM d, yyyy');
+  const formatDate = format(
+    new Date(Number(dateMass[0]), Number(dateMass[1]) - 1, day),
+    'MMM d, yyyy'
+  );
   return formatDate;
 };
 

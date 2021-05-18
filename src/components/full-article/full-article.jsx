@@ -3,55 +3,57 @@ import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { Redirect } from 'react-router';
 import PropTypes from 'prop-types';
+import { Spin } from 'antd';
 import './index.scss';
 import ArticleService from '../../article-service/article-service';
 import HeaderAuthorization from '../header/authorization-header';
 import Header from '../header/header';
 import { dateParse } from '../article/article';
 
-
 const useConfirm = (currentArticle) => {
-    const profile = useSelector(state => state.profileReducer)
-    const [confirmBool, setConfirmBool] = useState(false);
-    const [redirectBool, setRedirectBool] = useState(false);
-    const oneClickDeleteHandler = () => {
-        setConfirmBool(true);
-    };
-    const confirmNoHandler = () => {
-        setConfirmBool(false);
-    }
-    const confirmYesHandler = () => {
-        new ArticleService().deleteArticle(profile.user.token, currentArticle.slug).then(() => {
-            setRedirectBool(true);
-        });
-    }
-    return {
-        confirmBool,
-        oneClickDeleteHandler,
-        confirmNoHandler,
-        confirmYesHandler,
-        redirectBool
-    }
-}
- /* eslint-disable */
+  const profile = useSelector((state) => state.profileReducer);
+  const [confirmBool, setConfirmBool] = useState(false);
+  const [redirectBool, setRedirectBool] = useState(false);
+  const oneClickDeleteHandler = () => {
+    setConfirmBool(true);
+  };
+  const confirmNoHandler = () => {
+    setConfirmBool(false);
+  };
+  const confirmYesHandler = () => {
+    new ArticleService()
+      .deleteArticle(profile.user.token, currentArticle.slug)
+      .then(() => {
+        setRedirectBool(true);
+      });
+  };
+  return {
+    confirmBool,
+    oneClickDeleteHandler,
+    confirmNoHandler,
+    confirmYesHandler,
+    redirectBool,
+  };
+};
+/* eslint-disable */
 const useLike = (favoritesCount) => {
-    const [like, setLike] = useState(false);
-    let buttonLikeClassName = 'article__like-button-false';
-    let count = favoritesCount
-    if (like) {
-        count = count+1;
-        buttonLikeClassName = 'article__like-button-true';
-    }
-    const likeHandler = (event) => {
-        setLike(!like);
-        event.preventDefault();
-    }
-    return {
-        likeHandler,
-        buttonLikeClassName,
-        count
-    }
-}
+  const [like, setLike] = useState(false);
+  let buttonLikeClassName = 'article__like-button-false';
+  let count = favoritesCount;
+  if (like) {
+    count = count + 1;
+    buttonLikeClassName = 'article__like-button-true';
+  }
+  const likeHandler = (event) => {
+    setLike(!like);
+    event.preventDefault();
+  };
+  return {
+    likeHandler,
+    buttonLikeClassName,
+    count,
+  };
+};
 /* eslint-enable */
 
 const FullArticle = ({ match }) => {
@@ -63,24 +65,42 @@ const FullArticle = ({ match }) => {
     tagList: [],
     description: '',
   });
+  const [load, setLoad] = useState(false);
   useEffect(() => {
     const slug = match.params.id;
+    setLoad(true);
     new ArticleService().getCurrentArticle(slug).then((res) => {
+      setLoad(false);
       setCurrentArticle(res.article);
     });
   }, [match.params.id]);
 
   const { favoritesCount } = currentArticle;
-  const { author, title, body, tagList, description, createdAt } = currentArticle;
+  const {
+    author,
+    title,
+    body,
+    tagList,
+    description,
+    createdAt,
+  } = currentArticle;
   let formatDate = ' ';
   if (createdAt) {
     formatDate = dateParse(createdAt);
   }
-  const {confirmBool, oneClickDeleteHandler, confirmNoHandler, confirmYesHandler ,redirectBool} = useConfirm()
+  const {
+    confirmBool,
+    oneClickDeleteHandler,
+    confirmNoHandler,
+    confirmYesHandler,
+    redirectBool,
+  } = useConfirm(currentArticle);
   const confirmForm = (
     <section className="article__confirm">
       <div className="article__confirm-img" />
-      <span className="article__confirm-question">Are you sure to delete this article?</span>
+      <span className="article__confirm-question">
+        Are you sure to delete this article?
+      </span>
       <button
         type="button"
         className="article__confirm-no"
@@ -97,16 +117,24 @@ const FullArticle = ({ match }) => {
       </button>
     </section>
   );
-  const {likeHandler,buttonLikeClassName,count} = useLike(favoritesCount)
+  const { likeHandler, buttonLikeClassName, count } = useLike(favoritesCount);
   const { username, image } = author;
   const tags = tagList.map((item) => <li className="article__tag">{item}</li>);
-  const header = Object.keys(profile.user).length !== 0 ? <HeaderAuthorization /> : <Header />;
+  const header =
+    Object.keys(profile.user).length !== 0 ? (
+      <HeaderAuthorization />
+    ) : (
+      <Header />
+    );
   /* eslint-disable */
   const editDeleteButtons =
     profile.user.username === author.username ? (
       <div style={{ marginTop: 30, position: 'relative' }}>
         {!confirmBool ? (
-          <Link className={'article__profile-button article__profile-button--edit'} to="/edit-article">
+          <Link
+            className={'article__profile-button article__profile-button--edit'}
+            to="/edit-article"
+          >
             Edit
           </Link>
         ) : (
@@ -121,17 +149,16 @@ const FullArticle = ({ match }) => {
         </button>
       </div>
     ) : null;
-  return (
+  return load ? (
+    <Spin className="content__spin-article-list" />
+  ) : (
     <section>
       {header}
       <div className="article article--full">
         <div>
           <div style={{ display: 'flex' }}>
             <h2 className="article__title">{title}</h2>
-            <button
-              className={buttonLikeClassName}
-              onClick={likeHandler}
-            />
+            <button className={buttonLikeClassName} onClick={likeHandler} />
             <div className={'article__like-count'}>{count}</div>
           </div>
           <ul className="article__tag-list">{tags}</ul>
@@ -153,8 +180,8 @@ const FullArticle = ({ match }) => {
       </div>
       {redirectBool ? <Redirect to="/articles" /> : null}
     </section>
-    /* eslint-enable */
   );
+  /* eslint-enable */
 };
 
 /* eslint-disable */

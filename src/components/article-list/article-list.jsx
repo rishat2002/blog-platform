@@ -50,7 +50,9 @@ const ArticleList = () => {
           size="small"
         />
       ) : null}
-      {!paginationFlag ? <Spin size="large" className="content__spin-article-list" /> : null}
+      {!paginationFlag ? (
+        <Spin size="large" className="content__spin-article-list" />
+      ) : null}
     </div>
   );
 };

@@ -4,7 +4,9 @@ class ArticleService {
   servConfig = new ServConfig();
 
   async noInitArticles(limit, offset) {
-    return this.servConfig.getResource(`articles?limit=${limit}&offset=${offset}`);
+    return this.servConfig.getResource(
+      `articles?limit=${limit}&offset=${offset}`
+    );
   }
 
   async createArticle(articleInfo, token) {

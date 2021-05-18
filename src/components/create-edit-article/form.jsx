@@ -6,7 +6,6 @@ import PropTypes from 'prop-types';
 import '../authorization/index.scss';
 import { Spin } from 'antd';
 
-
 /* eslint-disable */
 const TagInput = ({ tagInfo, deleteFunc }) => {
   const { register } = useForm();
@@ -40,8 +39,7 @@ const TagInput = ({ tagInfo, deleteFunc }) => {
   );
 };
 
-
-const useHandlers = (setArticleInfo,articleInfo) => {
+const useHandlers = (setArticleInfo, articleInfo) => {
   const titleHandler = (event) => {
     setArticleInfo({ ...articleInfo, title: event.target.value });
   };
@@ -54,11 +52,11 @@ const useHandlers = (setArticleInfo,articleInfo) => {
   return {
     titleHandler,
     descriptionHandler,
-    bodyHandler
-  }
-}
+    bodyHandler,
+  };
+};
 
-const useTagProps = (tagMass,setTagMass) => {
+const useTagProps = (tagMass, setTagMass) => {
   const deleteFunc = (id) => {
     const newTagMass = tagMass.filter((item) => item.id !== id);
     setTagMass(newTagMass);
@@ -73,19 +71,27 @@ const useTagProps = (tagMass,setTagMass) => {
     setTagMass([...tagMass, newTag]);
   };
   return {
-    deleteFunc,addTagHandler
-  }
-}
+    deleteFunc,
+    addTagHandler,
+  };
+};
 
 const Form = ({ formTitle, sendDataFunc }) => {
   const currentArticle = useSelector((state) => state.currentArticleReducer);
   const profile = useSelector((state) => state.profileReducer);
   const { register, handleSubmit, errors } = useForm();
-  const [articleInfo, setArticleInfo] = useState({ title: '', description: '', body: '' });
+  const [articleInfo, setArticleInfo] = useState({
+    title: '',
+    description: '',
+    body: '',
+  });
   const [tagMass, setTagMass] = useState([]);
   const [postForm, setPostForm] = useState(false);
   const [disableSubmit, setDisableSubmit] = useState(true);
-  const {titleHandler, descriptionHandler, bodyHandler} = useHandlers(setArticleInfo,articleInfo)
+  const { titleHandler, descriptionHandler, bodyHandler } = useHandlers(
+    setArticleInfo,
+    articleInfo
+  );
   useEffect(() => {
     if (formTitle === 'Edit article') {
       setArticleInfo({ ...currentArticle });
@@ -94,7 +100,7 @@ const Form = ({ formTitle, sendDataFunc }) => {
 
   const onSubmit = () => {
     setDisableSubmit(false);
-    setPostForm(true)
+    setPostForm(true);
     setArticleInfo({
       ...articleInfo,
       tagList: tagMass.map((item) => item.tagName),
@@ -106,18 +112,26 @@ const Form = ({ formTitle, sendDataFunc }) => {
         setDisableSubmit(true);
       });
     } else {
-      sendDataFunc(articleInfo, profile.user.token, currentArticle.slug).then(() => {
-        setDisableSubmit(true);
-      });
+      sendDataFunc(articleInfo, profile.user.token, currentArticle.slug).then(
+        () => {
+          setDisableSubmit(true);
+        }
+      );
     }
   }
-  const {deleteFunc,addTagHandler} = useTagProps(tagMass,setTagMass)
-  const tagComponentMass = tagMass.map((item) => <TagInput tagInfo={item} deleteFunc={deleteFunc} />);
+  const { deleteFunc, addTagHandler } = useTagProps(tagMass, setTagMass);
+  const tagComponentMass = tagMass.map((item) => (
+    <TagInput tagInfo={item} deleteFunc={deleteFunc} />
+  ));
   const { body, description, title } = articleInfo;
   return (
     <section>
       {postForm ? <Redirect to="/articles" /> : null}
-      <form onSubmit={handleSubmit(onSubmit)} action="" className="form content__article-form">
+      <form
+        onSubmit={handleSubmit(onSubmit)}
+        action=""
+        className="form content__article-form"
+      >
         <h3 className="form__name">{formTitle}</h3>
         <label className="form__label">
           Title
@@ -130,7 +144,9 @@ const Form = ({ formTitle, sendDataFunc }) => {
             name="titleError"
           />
         </label>
-        {errors.titleError && <div className="error form__error">Enter title</div>}
+        {errors.titleError && (
+          <div className="error form__error">Enter title</div>
+        )}
         <label className="form__label">
           Short description
           <input
@@ -142,7 +158,9 @@ const Form = ({ formTitle, sendDataFunc }) => {
             name="shortDescriptionError"
           />
         </label>
-        {errors.shortDescriptionError && <div className="error form__error">Enter short description</div>}
+        {errors.shortDescriptionError && (
+          <div className="error form__error">Enter short description</div>
+        )}
         <label className="form__label">
           Text
           <textarea
@@ -157,12 +175,20 @@ const Form = ({ formTitle, sendDataFunc }) => {
         <label className="form__label">
           Tags
           {tagComponentMass}
-          <button type="button" onClick={addTagHandler} className="form__button-add-tag">
+          <button
+            type="button"
+            onClick={addTagHandler}
+            className="form__button-add-tag"
+          >
             Add tag
           </button>
         </label>
         {disableSubmit ? (
-          <input type="submit" className="form__submit form__submit--edit submit-button" value="Send" />
+          <input
+            type="submit"
+            className="form__submit form__submit--edit submit-button"
+            value="Send"
+          />
         ) : (
           <Spin className="form__submit" />
         )}

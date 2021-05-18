@@ -1,5 +1,9 @@
 const reducer = (state = { user: {}, errors: {} }, action) => {
-  if (action.type === 'FETCH-SIGN-IN' || action.type === 'FETCH-SIGN-UP' || action.type === 'FETCH-UPDATE') {
+  if (
+    action.type === 'FETCH-SIGN-IN' ||
+    action.type === 'FETCH-SIGN-UP' ||
+    action.type === 'FETCH-UPDATE'
+  ) {
     if (action.profile.user !== undefined) {
       return { user: action.profile.user, errors: {} };
     }

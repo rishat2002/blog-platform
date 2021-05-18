@@ -3,6 +3,7 @@ import 'antd/dist/antd.css';
 import './index.scss';
 import { BrowserRouter, Route } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
+import { Redirect, Switch } from 'react-router';
 import FullArticle from '../full-article/full-article';
 import SignIn from '../authorization/sign-in';
 import SignUp from '../authorization/sign-up';
@@ -11,7 +12,6 @@ import EditProfile from '../authorization/edit-profile';
 import CreateArticle from '../create-edit-article/create-article';
 import EditArticle from '../create-edit-article/edit-article';
 import { getUserLogOut, initUser } from '../../redux/profile-actions';
-import {Redirect, Switch} from "react-router";
 
 const App = () => {
   const dispatch = useDispatch();
@@ -26,16 +26,16 @@ const App = () => {
     <div className="content">
       <BrowserRouter>
         <Switch>
-        <Route path="/articles/:id" component={FullArticle} />
-        <Route path="/sign-in" component={SignIn} />
-        <Route path="/sign-up" component={SignUp} />
-        <Route exact path="/profile" component={EditProfile} />
-        <Route exact path="/edit-article" component={EditArticle} />
-        <Route exact path="/create-article" component={CreateArticle} />
-        <Route exact path="/articles" component={Articles} />
-        <Route exact path="*">
-          <Redirect to='/articles'/>
-        </Route>
+          <Route path="/articles/:id" component={FullArticle} />
+          <Route path="/sign-in" component={SignIn} />
+          <Route path="/sign-up" component={SignUp} />
+          <Route exact path="/profile" component={EditProfile} />
+          <Route exact path="/edit-article" component={EditArticle} />
+          <Route exact path="/create-article" component={CreateArticle} />
+          <Route exact path="/articles" component={Articles} />
+          <Route exact path="*">
+            <Redirect to="/articles" />
+          </Route>
         </Switch>
       </BrowserRouter>
     </div>

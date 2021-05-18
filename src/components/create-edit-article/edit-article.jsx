@@ -7,11 +7,16 @@ import '../authorization/index.scss';
 
 const EditArticle = () => {
   const currentArticle = useSelector((state) => state.currentArticle);
-  const postNewArticle = (articleInfo, token, slug) => new ArticleService().editArticle(articleInfo, token, slug);
+  const postNewArticle = (articleInfo, token, slug) =>
+    new ArticleService().editArticle(articleInfo, token, slug);
   return (
     <div>
       <HeaderAuthorization />
-      <Form formTitle="Edit article" sendDataFunc={postNewArticle} currentArticle={currentArticle} />
+      <Form
+        formTitle="Edit article"
+        sendDataFunc={postNewArticle}
+        currentArticle={currentArticle}
+      />
     </div>
   );
 };
